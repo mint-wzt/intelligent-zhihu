@@ -1,5 +1,14 @@
 # front-end
 
+*本地运行*
+
+```cmd
+cd front-end
+npm install
+npm run serve
+```
+
+
 ## Project setup
 ```
 npm install
