@@ -36,3 +36,23 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## 用到的库
+
+[vue-instant]
+
+https://github.com/santiblanko/vue-instant
+
+https://santiblanko.github.io/vue-instant/#/
+
+[vue-material]
+
+https://vuematerial.io
+
+[material-design-icons]
+
+https://github.com/google/material-design-icons
+
+https://google.github.io/material-design-icons/
+
+https://www.materialpalette.com/icons
