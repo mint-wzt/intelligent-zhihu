@@ -1,6 +1,6 @@
 package com.zhihu.intelligent.system.service;
 
-import com.zhihu.intelligent.security.entity.JwtUser;
+import com.zhihu.intelligent.security.model.JwtUser;
 import com.zhihu.intelligent.system.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

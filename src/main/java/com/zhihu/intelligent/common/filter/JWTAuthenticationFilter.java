@@ -4,15 +4,21 @@ package com.zhihu.intelligent.common.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhihu.intelligent.common.constants.SecurityConstants;
 import com.zhihu.intelligent.common.utils.JwtTokenUtils;
-import com.zhihu.intelligent.security.entity.JwtUser;
-import com.zhihu.intelligent.security.entity.LoginUser;
-import org.springframework.http.HttpStatus;
+import com.zhihu.intelligent.common.utils.LogUtil;
+import com.zhihu.intelligent.common.utils.UserUtil;
+import com.zhihu.intelligent.security.model.JwtUser;
+import com.zhihu.intelligent.security.model.LoginUser;
+import com.zhihu.intelligent.system.entity.Log;
+import com.zhihu.intelligent.system.service.LogService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -27,11 +33,15 @@ import java.util.stream.Collectors;
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+
     private ThreadLocal<Boolean> rememberMe = new ThreadLocal<>();
     private AuthenticationManager authenticationManager;
+    private LogService logService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager){
+
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager,LogService logService){
         this.authenticationManager = authenticationManager;
+        this.logService = logService;
         // 设置URL，以确定是否需要身份验证
         super.setFilterProcessesUrl(SecurityConstants.AUTH_LOGIN_URL);
     }
@@ -67,8 +77,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
+        Log log = LogUtil.createLog(request,"LOGIN","用户登录成功",null);
+        if (jwtUser != null){
+            log.setUserId(jwtUser.getId());
+            log.setUsername(jwtUser.getUsername());
+        }
+        logService.save(log);
+
         //创建Token
-        String token = JwtTokenUtils.createToken(jwtUser.getUsername(),roles,rememberMe.get(),jwtUser.getId());
+        String token = JwtTokenUtils.createToken(jwtUser,roles,rememberMe.get());
         // Http Response Header 中返回 Token
         response.setHeader(SecurityConstants.TOKEN_HEADER,token);
     }
@@ -83,6 +100,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        Log log = LogUtil.createLog(request,"LOGIN","用户登录失败",null);
+        logService.save(log);
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,failed.getMessage());
     }
 }

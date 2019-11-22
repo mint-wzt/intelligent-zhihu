@@ -1,6 +1,7 @@
 package com.zhihu.intelligent.common.utils;
 
 import com.zhihu.intelligent.common.constants.SecurityConstants;
+import com.zhihu.intelligent.security.model.JwtUser;
 import com.zhihu.intelligent.system.service.UserService;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +9,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.crypto.SecretKey;
 import javax.xml.bind.DatatypeConverter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * 安全认证工具类
@@ -28,17 +28,20 @@ public class JwtTokenUtils {
     private static byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SecurityConstants.JWT_SECRET_KEY);
     private static SecretKey secretKey = Keys.hmacShaKeyFor(apiKeySecretBytes);
 
-    public static String createToken(String username, List<String> roles, boolean isRememberMe,String id) {
+    public static String createToken(JwtUser jwtUser, List<String> roles, boolean isRememberMe) {
         long expiration = isRememberMe ? SecurityConstants.EXPIRATION_REMEMBER : SecurityConstants.EXPIRATION;
+        Map<String,Object> claims = new HashMap<>();
+        claims.put(SecurityConstants.ROLE_CLAIMS,String.join(",", roles));
+        claims.put("nickname",jwtUser.getNickName());
 
         String tokenPrefix = Jwts.builder()
                 .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
-                .claim(SecurityConstants.ROLE_CLAIMS, String.join(",", roles))
+                .addClaims(claims)
                 .setIssuer("wzt")
                 .setIssuedAt(new Date())
-                .setSubject(username)
-                .setId(id)
+                .setSubject(jwtUser.getUsername())
+                .setId(jwtUser.getId())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
                 .compact();
         return SecurityConstants.TOKEN_PREFIX + tokenPrefix;
@@ -68,7 +71,7 @@ public class JwtTokenUtils {
                 .collect(Collectors.toList());
     }
 
-    private static Claims getTokenBody(String token) {
+    public static Claims getTokenBody(String token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)

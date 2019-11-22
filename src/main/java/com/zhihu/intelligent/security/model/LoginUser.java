@@ -1,4 +1,4 @@
-package com.zhihu.intelligent.security.entity;
+package com.zhihu.intelligent.security.model;
 
 import lombok.Data;
 

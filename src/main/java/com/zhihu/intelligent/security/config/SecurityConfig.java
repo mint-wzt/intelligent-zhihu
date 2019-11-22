@@ -4,10 +4,12 @@ import com.zhihu.intelligent.common.filter.JWTAuthenticationFilter;
 import com.zhihu.intelligent.common.filter.JWTAuthorizationFilter;
 import com.zhihu.intelligent.security.exception.JWTAccessDeniedHandler;
 import com.zhihu.intelligent.security.exception.JWTAuthenticationEntryPoint;
+import com.zhihu.intelligent.system.service.LogService;
 import com.zhihu.intelligent.system.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,6 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
+
+    @Autowired
+    private LogService logService;
 
     /**
      * 密码编码器
@@ -51,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutUrl("/auth/logout").permitAll()
                 .and()
                 //添加自定义Filter
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(),logService))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 // 不需要session（不创建会话）
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

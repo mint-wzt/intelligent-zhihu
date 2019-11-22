@@ -1,8 +1,6 @@
 package com.zhihu.intelligent.system.exception;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.zhihu.intelligent.common.response.GlobalResponse;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

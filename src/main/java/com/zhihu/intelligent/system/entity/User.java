@@ -81,6 +81,7 @@ public class User{
     @Column(name = "qq")
     private String qq;
 
+
 //    public List<SimpleGrantedAuthority> getRoles() {
 //        List<SimpleGrantedAuthority> rolesList = new ArrayList<>();
 //        Arrays.stream(roles.split(",")).forEach(role ->

@@ -1,4 +1,4 @@
-package com.zhihu.intelligent.common.response;
+package com.zhihu.intelligent.system.exception;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;

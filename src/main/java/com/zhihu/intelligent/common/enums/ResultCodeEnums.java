@@ -1,5 +1,8 @@
 package com.zhihu.intelligent.common.enums;
 
+/**
+ * 此类待扩展
+ */
 public enum  ResultCodeEnums {
     SYSTEM_ERROR("-001","系统异常"),
     BAD_REQUEST("-002","错误的请求参数"),

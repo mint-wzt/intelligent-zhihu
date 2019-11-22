@@ -1,4 +1,4 @@
-package com.zhihu.intelligent.security.entity;
+package com.zhihu.intelligent.security.model;
 
 import com.zhihu.intelligent.common.utils.UserUtil;
 import com.zhihu.intelligent.system.entity.User;
