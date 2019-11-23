@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -32,6 +31,14 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public String updateUser(@RequestBody User user) {
         return userService.updateUser(user);
+    }
+
+    @ApiOperation(value = "上传头像",notes = "上传头像")
+    @PostMapping("/users/avtar")
+    @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
+    @ResponseStatus(HttpStatus.OK)
+    public String uploadAvtar(@RequestParam("file") MultipartFile file){
+        return userService.updateAvtar(file);
     }
 
 }

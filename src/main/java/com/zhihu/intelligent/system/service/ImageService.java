@@ -29,16 +29,12 @@ public class ImageService {
 
 
     @Action(type = "CREATE", operation = "上传图片")
-    public String save(MultipartFile[] files){
+    public String save(MultipartFile[] files) {
         List<String> filesUrlList = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             MultipartFile file = files[i];
             if (file != null) {
-                try {
-                    filesUrlList.add(executeUpload(file,SystemConstants.BASE_DIR,imagePath));
-                }catch (Exception e){
-                    throw new ImageUploadFailedException("图片上传失败");
-                }
+                filesUrlList.add(executeUpload(file, SystemConstants.BASE_DIR, imagePath));
             }
         }
         GlobalResponse response = new GlobalResponse(200, "图片上传成功");
@@ -46,7 +42,7 @@ public class ImageService {
         return response.toString();
     }
 
-    private String executeUpload(MultipartFile file,String basePath,String imagePath) throws Exception {
+    public String executeUpload(MultipartFile file, String basePath, String imagePath) {
         Image image = new Image();
         //文件后缀名
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
@@ -61,15 +57,18 @@ public class ImageService {
         if (!serverFile.getParentFile().exists()) {
             serverFile.getParentFile().mkdirs();
         }
-        //将上传的文件写入到服务器端文件内
-        file.transferTo(serverFile);
-
+        try {
+            //将上传的文件写入到服务器端文件内
+            file.transferTo(serverFile);
+        }catch (Exception e){
+            throw new ImageUploadFailedException("图片上传失败");
+        }
         // 保存图片信息
         image.setFormat(suffix);
         image.setName(fileName);
         image.setCreateDate(new Date());
         image.setSize(file.getSize());
-        image.setImageUrl(SystemConstants.ADDRESS+ imagePath + userId + "/" + fileName);
+        image.setImageUrl(SystemConstants.ADDRESS + imagePath + userId + "/" + fileName);
         image.setUserId(userId);
         imageRepository.save(image);
 

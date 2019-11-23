@@ -2,6 +2,8 @@ package com.zhihu.intelligent.system.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zhihu.intelligent.common.constants.SystemConstants;
+import com.zhihu.intelligent.common.utils.UserUtil;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.exception.UnknownUserUpdateException;
@@ -18,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,11 +40,12 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private LogService logService;
-
+    private ImageService imageService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private static String avtarPath = "avtar/";
 
     public User saveUser(RegisterUser registerUser) {
         Optional<User> optionalUser = userRepository.findByUsername(registerUser.getUsername());
@@ -69,15 +73,6 @@ public class UserService {
     public User findUserByUserName(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No user found with username " + username));
-    }
-
-    public void deleteUserByUserName(String username) {
-        userRepository.deleteByUsername(username);
-    }
-
-
-    public Page<User> getAllUser(int pageNum, int pageSize) {
-        return userRepository.findAll(PageRequest.of(pageNum, pageSize));
     }
 
     @Action(type = "READ",operation = "获取用户信息")
@@ -114,7 +109,6 @@ public class UserService {
 
     public String getUserInfo(int code, String message, User user) {
         GlobalResponse globalResponse = new GlobalResponse(code, message);
-//        JSONObject data = globalResponse.getData();
         Map<String,Object> data = new HashMap<>();
         data.put("username", user.getUsername());
         data.put("nickname", user.getNickName());
@@ -130,6 +124,26 @@ public class UserService {
         data.put("qq", user.getQq());//
         globalResponse.setData(new JSONObject(data));
         return globalResponse.toString();
+    }
+
+    @Action(type = "UPDATE",operation = "更新头像")
+    public String updateAvtar(MultipartFile file){
+        String avtarUrl = imageService.executeUpload(file, SystemConstants.BASE_DIR,avtarPath);
+        User user = userRepository.findByUsername(UserUtil.getUsername()).get();
+        user.setAvtarUrl(avtarUrl);
+        userRepository.save(user);
+        GlobalResponse globalResponse = new GlobalResponse(200,"上传头像成功");
+        globalResponse.getData().put("avtarUrl",avtarUrl);
+        return globalResponse.toString();
+    }
+
+    public void deleteUserByUserName(String username) {
+        userRepository.deleteByUsername(username);
+    }
+
+
+    public Page<User> getAllUser(int pageNum, int pageSize) {
+        return userRepository.findAll(PageRequest.of(pageNum, pageSize));
     }
 
 }
