@@ -23,20 +23,29 @@ public class UserUtil {
                 .toArray(String[]::new);
     }
 
+    // 获取用户角色
     public static List<SimpleGrantedAuthority> getRoles(User user) {
         String roles = user.getRoles();
+        String permissions = user.getPermissions();
         List<SimpleGrantedAuthority> rolesList = new ArrayList<>();
         Arrays.stream(roles.split(",")).forEach(role ->
                 rolesList.add(new SimpleGrantedAuthority("ROLE_" + role)));
+        Arrays.stream(permissions.split(",")).forEach(permission ->
+                rolesList.add(new SimpleGrantedAuthority("ROLE_" + permission)));
         return rolesList;
     }
 
+
+
+
     //获取当前认证的用户
-    public static JwtUser getJwtUser(){
+    public static String getUsername(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null || authentication.getPrincipal() != null){
-            return (JwtUser) authentication.getPrincipal();
+            return (String) authentication.getPrincipal();
         }
         return null;
     }
+
+
 }

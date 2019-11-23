@@ -33,6 +33,7 @@ public class JwtTokenUtils {
         Map<String,Object> claims = new HashMap<>();
         claims.put(SecurityConstants.ROLE_CLAIMS,String.join(",", roles));
         claims.put("nickname",jwtUser.getNickName());
+        claims.put("avtar_url",jwtUser.getAvtarUrl());
 
         String tokenPrefix = Jwts.builder()
                 .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)

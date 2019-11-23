@@ -26,4 +26,10 @@ public class GlobalExceptionHandler {
     public String handleUnkownUserUpdateException(UnknownUserUpdateException e){
         return JSON.toJSONString(new GlobalResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage()));
     }
+
+    @ExceptionHandler(value = ImageUploadFailedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleImageUploadFailedException(ImageUploadFailedException e){
+        return JSON.toJSONString(new GlobalResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage()));
+    }
 }

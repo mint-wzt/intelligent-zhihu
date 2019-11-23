@@ -19,6 +19,7 @@ public class JwtUser implements UserDetails {
     private String username;
     private String password;
     private String nickName;
+    private String avtarUrl;
     private Collection<? extends GrantedAuthority> authorities;
 
     /**
@@ -28,8 +29,8 @@ public class JwtUser implements UserDetails {
         id = user.getId();
         username = user.getUsername();
         password = user.getPassword();
+        avtarUrl = user.getAvtarUrl();
         authorities = UserUtil.getRoles(user);
-
         // 添加用户权限
 
         nickName = user.getNickName();
