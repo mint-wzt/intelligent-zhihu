@@ -7,7 +7,7 @@ const routes = [
             {
                 path:'/tabs/recommend',
                 name: 'recommend',
-                props: { data: 'attrs' },
+                props: true,
                 component: () => import('@/components/tabs/TheRecommend.vue')
             }, {
                 path: '/tabs/attention',
