@@ -1,5 +1,6 @@
 package com.zhihu.intelligent.system.controller;
 
+import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.service.ImageService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,9 @@ public class ImageController {
     @ApiOperation(value = "上传图片", notes = "上传图片")
     @PostMapping("/images")
     @PreAuthorize("hasRole('CREATE')")
-    @ResponseStatus(HttpStatus.OK)
-    public String uploadIamge(@RequestParam("files") MultipartFile[] files){
-        return imageService.save(files);
+    @ResponseStatus(HttpStatus.CREATED)
+    public GlobalResponse uploadIamge(@RequestParam("id") String id, @RequestParam("files") MultipartFile[] files) {
+        return imageService.save(files, id);
     }
 
 }

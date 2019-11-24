@@ -1,6 +1,7 @@
 package com.zhihu.intelligent.system.controller;
 
 import com.zhihu.intelligent.system.entity.User;
+import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class UserController {
     @GetMapping("/users/{id}")
     @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
     @ResponseStatus(HttpStatus.OK)
-    public String getUser(@PathVariable("id") String id) {
+    public GlobalResponse getUser(@PathVariable("id") String id) {
         return userService.getUserById(id);
     }
 
@@ -29,16 +30,16 @@ public class UserController {
     @PostMapping("/users/")
     @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
     @ResponseStatus(HttpStatus.OK)
-    public String updateUser(@RequestBody User user) {
+    public GlobalResponse updateUser(@RequestBody User user) {
         return userService.updateUser(user);
     }
 
-    @ApiOperation(value = "上传头像",notes = "上传头像")
+    @ApiOperation(value = "上传头像", notes = "上传头像")
     @PostMapping("/users/avtar")
     @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
-    @ResponseStatus(HttpStatus.OK)
-    public String uploadAvtar(@RequestParam("file") MultipartFile file){
-        return userService.updateAvtar(file);
+    @ResponseStatus(HttpStatus.CREATED)
+    public GlobalResponse uploadAvtar(@RequestParam("id") String id, @RequestParam("file") MultipartFile file) {
+        return userService.updateAvtar(file, id);
     }
 
 }

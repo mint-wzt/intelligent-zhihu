@@ -16,11 +16,19 @@ public class GlobalResponse implements Serializable {
     //业务数据
     private JSONObject data;
 
+    public GlobalResponse(){
+        this.data = new JSONObject();
+    }
+
+    public GlobalResponse(Integer code){
+        this();
+        this.code = code;
+    }
+
 
     public GlobalResponse(Integer code, String message) {
-        this.code = code;
+        this(code);
         this.message = message;
-        this.data = new JSONObject();
     }
 
 

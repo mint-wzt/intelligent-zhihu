@@ -17,8 +17,8 @@ public class Log {
     @Column(name = "user_id")
     private String userId;
 
-    @Column(name = "username")
-    private String username;
+//    @Column(name = "username")
+//    private String username;
 
     @Column(name = "login_ip")
     private String loginIP;

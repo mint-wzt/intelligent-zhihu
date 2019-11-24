@@ -1,12 +1,17 @@
 package com.zhihu.intelligent.system.controller;
 
 import com.zhihu.intelligent.system.entity.Article;
+import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.service.ArticleService;
+import com.zhihu.intelligent.system.service.CommentService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.Null;
 
 @RestController
 @RequestMapping("/api/article")
@@ -15,15 +20,44 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
-    @ApiOperation(value = "发布文章",notes = "发布文章")
+    @Autowired
+    private CommentService commentService;
+
+    @ApiOperation(value = "发布文章", notes = "发布文章")
     @PostMapping("/articles")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('CREATE')")
-    public String publisArticle(@RequestBody Article article){
+    public GlobalResponse publisArticle(@RequestBody Article article) {
         return articleService.sava(article);
     }
 
+    @ApiOperation(value = "判断用户是否对文章点赞", notes = "判断用户是否对文章点赞")
+    @PostMapping("/thumbs/hasme")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
+    public GlobalResponse thumbHasMe(@RequestParam("articleId") String articleId,
+                                     @RequestParam("userId") String userId) {
+        return articleService.hasMe(articleId, userId);
+    }
 
+    @ApiOperation(value = "点赞", notes = "点赞")
+    @PostMapping("/thumbs")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
+    public GlobalResponse thumb(@RequestParam("articleId") String articleId,
+                                @RequestParam("userId") String userId) {
+        return articleService.thumb(articleId, userId);
+    }
 
+    @ApiOperation(value = "文章评论", notes = "文章评论")
+    @PostMapping("/comment")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
+    public GlobalResponse comment(@RequestParam("articleId") String articleId,
+                                  @RequestParam("userId") String userId,
+                                  @RequestParam("content") String content,
+                                  @RequestParam(value = "commentPid",defaultValue = "") String commentPid) {
+        return commentService.save(articleId, userId, content, commentPid);
+    }
 
 }

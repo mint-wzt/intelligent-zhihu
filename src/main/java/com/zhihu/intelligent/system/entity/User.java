@@ -82,7 +82,7 @@ public class User{
     private String qq;
 
 
-//    public List<SimpleGrantedAuthority> getRoles() {
+//    public List<SimpleGrantedAuthority> getPermissions() {
 //        List<SimpleGrantedAuthority> rolesList = new ArrayList<>();
 //        Arrays.stream(roles.split(",")).forEach(role ->
 //                rolesList.add(new SimpleGrantedAuthority("ROLE_" + role)));

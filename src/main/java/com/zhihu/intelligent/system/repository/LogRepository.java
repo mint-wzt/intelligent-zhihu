@@ -10,7 +10,4 @@ import java.util.List;
 @Repository
 public interface LogRepository extends JpaRepository<Log,Long> {
 
-    //通过用户名查找日志记录
-    List<Log> findLogsByUsername(String username);
-
 }

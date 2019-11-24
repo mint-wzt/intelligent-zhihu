@@ -9,7 +9,7 @@ public class SecurityConstants {
     /**
      * 角色的key
      **/
-    public static final String ROLE_CLAIMS = "rol";
+    public static final String ROLE_CLAIMS = "role";
 
     /**
      * rememberMe 为 false 的时候过期时间是1个小时

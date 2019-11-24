@@ -18,22 +18,18 @@ public class JwtUser implements UserDetails {
     private String id;
     private String username;
     private String password;
-    private String nickName;
-    private String avtarUrl;
+    private User user;
     private Collection<? extends GrantedAuthority> authorities;
 
     /**
      * 通过 user 对象创建jwtUser
      */
     public JwtUser(User user) {
-        id = user.getId();
-        username = user.getUsername();
-        password = user.getPassword();
-        avtarUrl = user.getAvtarUrl();
-        authorities = UserUtil.getRoles(user);
-        // 添加用户权限
-
-        nickName = user.getNickName();
+        this.user = user;
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        authorities = UserUtil.getPermissions(user);
     }
 
     @Override
@@ -77,7 +73,6 @@ public class JwtUser implements UserDetails {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", nickname='" + nickName + '\'' +
                 ", authorities=" + authorities +
                 '}';
     }

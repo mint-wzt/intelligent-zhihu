@@ -2,6 +2,7 @@ package com.zhihu.intelligent.system.controller;
 
 import com.zhihu.intelligent.security.model.LoginUser;
 import com.zhihu.intelligent.security.model.RegisterUser;
+import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,11 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-//    @Autowired
-//    private HttpServletRequest request;
-
     @PostMapping("/register")
     @ApiOperation(value = "用户注册",notes = "用户注册")
-    public ResponseEntity registerUser(@RequestBody RegisterUser registerUser) {
-        userService.saveUser(registerUser);
-        return ResponseEntity.ok().build();
+    public GlobalResponse registerUser(@RequestBody RegisterUser registerUser,HttpServletRequest request) {
+        return userService.saveUser(registerUser,request);
     }
-
 
     @PostMapping("/login")
     @ApiOperation(value = "用户登录",notes = "用户登录")

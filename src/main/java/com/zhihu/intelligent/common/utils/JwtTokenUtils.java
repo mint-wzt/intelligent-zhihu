@@ -2,19 +2,22 @@ package com.zhihu.intelligent.common.utils;
 
 import com.zhihu.intelligent.common.constants.SecurityConstants;
 import com.zhihu.intelligent.security.model.JwtUser;
+import com.zhihu.intelligent.system.entity.User;
 import com.zhihu.intelligent.system.service.UserService;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.crypto.SecretKey;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 import java.util.*;
 import java.util.stream.Collectors;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * 安全认证工具类
@@ -32,8 +35,6 @@ public class JwtTokenUtils {
         long expiration = isRememberMe ? SecurityConstants.EXPIRATION_REMEMBER : SecurityConstants.EXPIRATION;
         Map<String,Object> claims = new HashMap<>();
         claims.put(SecurityConstants.ROLE_CLAIMS,String.join(",", roles));
-        claims.put("nickname",jwtUser.getNickName());
-        claims.put("avtar_url",jwtUser.getAvtarUrl());
 
         String tokenPrefix = Jwts.builder()
                 .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
@@ -55,10 +56,6 @@ public class JwtTokenUtils {
 
     public static String getUsernameByToken(String token) {
         return getTokenBody(token).getSubject();
-    }
-
-    public static String getIdByToken(String token){
-        return getTokenBody(token).getId();
     }
 
     /**

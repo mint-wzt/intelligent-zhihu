@@ -1,6 +1,7 @@
 package com.zhihu.intelligent.common.filter;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhihu.intelligent.common.constants.SecurityConstants;
 import com.zhihu.intelligent.common.utils.JwtTokenUtils;
@@ -9,22 +10,22 @@ import com.zhihu.intelligent.common.utils.UserUtil;
 import com.zhihu.intelligent.security.model.JwtUser;
 import com.zhihu.intelligent.security.model.LoginUser;
 import com.zhihu.intelligent.system.entity.Log;
+import com.zhihu.intelligent.system.entity.User;
+import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.service.LogService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,7 +69,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     /**
      * 如果验证成功，就生成token并返回
      */
-
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         JwtUser jwtUser = (JwtUser) authResult.getPrincipal();
@@ -77,17 +77,21 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=utf-8");
+        //创建Token
+        String token = JwtTokenUtils.createToken(jwtUser,roles,rememberMe.get());
+        GlobalResponse globalResponse = UserUtil.globalResponse(200,"认证成功",jwtUser.getUser());
+        globalResponse.getData().put("token",token);
+        PrintWriter out = response.getWriter();
+        out.append(globalResponse.toString());
+
+        // 保存登录日志
         Log log = LogUtil.createLog(request,"LOGIN","用户登录成功",null);
         if (jwtUser != null){
             log.setUserId(jwtUser.getId());
-            log.setUsername(jwtUser.getUsername());
         }
         logService.save(log);
-
-        //创建Token
-        String token = JwtTokenUtils.createToken(jwtUser,roles,rememberMe.get());
-        // Http Response Header 中返回 Token
-        response.setHeader(SecurityConstants.TOKEN_HEADER,token);
     }
 
     /**
@@ -96,13 +100,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * @param response
      * @param failed
      * @throws IOException
-     * @throws ServletException
      */
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"账号或密码不存在");
         Log log = LogUtil.createLog(request,"LOGIN","用户登录失败",null);
         logService.save(log);
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,failed.getMessage());
     }
 }
 
