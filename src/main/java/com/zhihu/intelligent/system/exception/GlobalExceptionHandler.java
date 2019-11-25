@@ -29,4 +29,11 @@ public class GlobalExceptionHandler {
     public GlobalResponse handleImageUploadFailedException(ImageUploadFailedException e){
         return new GlobalResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage());
     }
+
+    @ExceptionHandler(value = DeleteFailedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public GlobalResponse handleDeleteFailedException(DeleteFailedException e){
+        return new GlobalResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage());
+    }
 }

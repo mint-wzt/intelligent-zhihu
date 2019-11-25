@@ -10,4 +10,6 @@ public interface ArticleThumbRepository extends JpaRepository<ArticleThumbs, Lon
 
     // 根据文章ID和用户ID查询
     ArticleThumbs findByArticleIdAndUserId(String articleId, String userId);
+
+    void deleteByArticleId(String articleId);
 }

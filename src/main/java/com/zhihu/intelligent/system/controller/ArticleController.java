@@ -4,14 +4,12 @@ import com.zhihu.intelligent.system.entity.Article;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.service.ArticleService;
 import com.zhihu.intelligent.system.service.CommentService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Null;
 
 @RestController
 @RequestMapping("/api/article")
@@ -27,8 +25,28 @@ public class ArticleController {
     @PostMapping("/articles")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('CREATE')")
-    public GlobalResponse publisArticle(@RequestBody Article article) {
+    public GlobalResponse publishArticle(@RequestBody Article article) {
         return articleService.sava(article);
+    }
+
+    @ApiOperation(value = "修改文章",notes = "修改文章")
+    @PutMapping("/articles")
+    @PreAuthorize("hasRole('CREATE')")
+    @ResponseStatus(HttpStatus.OK)
+    public GlobalResponse editArticle(@RequestParam("articleId") String articleId,
+                                      @RequestParam("userId") String userId,
+                                      @RequestParam("status") int status,
+                                      @RequestParam("title") String title,
+                                      @RequestParam("content") String content){
+        return articleService.update(articleId,userId,status,title,content);
+    }
+
+    @ApiOperation(value = "用户删除文章",notes = "用户删除文章")
+    @DeleteMapping("/articles")
+    @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
+    @ResponseStatus(HttpStatus.OK)
+    public GlobalResponse deleteArticle(@RequestParam("articleId") String articleId){
+        return articleService.delete(articleId);
     }
 
     @ApiOperation(value = "判断用户是否对文章点赞", notes = "判断用户是否对文章点赞")
@@ -59,5 +77,7 @@ public class ArticleController {
                                   @RequestParam(value = "commentPid",defaultValue = "") String commentPid) {
         return commentService.save(articleId, userId, content, commentPid);
     }
+
+
 
 }

@@ -7,3 +7,5 @@ drop table article;
 drop table image;
 
 drop table article_thumb;
+
+drop table comment;

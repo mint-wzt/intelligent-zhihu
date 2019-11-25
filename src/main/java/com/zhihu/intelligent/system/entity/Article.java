@@ -45,7 +45,7 @@ public class Article {
 
 
     @Column(name = "status")
-    private String status;
+    private int status;
 
     @Column(name = "thumbs")
     private int thumbs;
@@ -58,6 +58,9 @@ public class Article {
 
     @Column(name = "collection_nums")
     private int collectionNums;
+
+    @Column(name = "comment_nums")
+    private int commentNums;
 
     @Column(name = "gmt_create")
     private Date createDate;

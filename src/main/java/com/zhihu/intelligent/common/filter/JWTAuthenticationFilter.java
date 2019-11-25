@@ -103,7 +103,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"账号或密码不存在");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=utf-8");
+        GlobalResponse globalResponse = new GlobalResponse(401,"账号或密码不存在");
+        PrintWriter out = response.getWriter();
+        out.append(globalResponse.toString());
+
         Log log = LogUtil.createLog(request,"LOGIN","用户登录失败",null);
         logService.save(log);
     }
