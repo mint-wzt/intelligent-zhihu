@@ -26,17 +26,27 @@ public class ArticleService {
     @Autowired
     private CommentRepository commentRepository;
 
-    @Action(type = "CREATE",operation = "发布文章")
-    public GlobalResponse sava(Article article){
+    @Action(type = "CREATE", operation = "发布文章")
+    public GlobalResponse save(String authorId, String author, String questionId,
+                               String title, String type, String content, int status) {
+        Article article = new Article();
+        article.setAuthorId(authorId);
+        article.setAuthor(author);
+        article.setQuestionId(questionId);
+        article.setTitle(title);
+        article.setType(type);
+        article.setContent(content);
+        article.setStatus(status);
         article.setCreateDate(new Date());
         Article art = articleRepository.save(article);
-        GlobalResponse globalResponse = new GlobalResponse(200,"发布文章成功");
-        globalResponse.getData().put("articleInfo",art);
+
+        GlobalResponse globalResponse = new GlobalResponse(200, "发布文章成功");
+        globalResponse.getData().put("articleInfo", art);
         return globalResponse;
     }
 
-    @Action(type = "UPDATE",operation = "修改文章")
-    public GlobalResponse update(String articleId,String userId,int status,String title,String content){
+    @Action(type = "UPDATE", operation = "修改文章")
+    public GlobalResponse update(String articleId, String userId, int status, String title, String content) {
         // 保存修改文章
         Article article = articleRepository.findById(articleId).get();
         article.setModifiedId(userId);
@@ -47,14 +57,14 @@ public class ArticleService {
         articleRepository.save(article);
 
         // 返回响应
-        GlobalResponse response = new GlobalResponse(200,"修改成功");
-        response.getData().put("articleInfo",article);
+        GlobalResponse response = new GlobalResponse(200, "修改成功");
+        response.getData().put("articleInfo", article);
         return response;
     }
 
-    @Action(type = "DELETE",operation = "删除文章")
+    @Action(type = "DELETE", operation = "删除文章")
     @Transactional
-    public GlobalResponse delete(String articleId){
+    public GlobalResponse delete(String articleId) {
         try {
             // 删除文章表里的文章
             articleRepository.deleteById(articleId);
@@ -64,32 +74,32 @@ public class ArticleService {
 
             // 删除评论表里的评论记录
             commentRepository.deleteByArticleId(articleId);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new DeleteFailedException("删除出错");
         }
 
 
-        GlobalResponse response = new GlobalResponse(200,"删除成功");
+        GlobalResponse response = new GlobalResponse(200, "删除成功");
         return response;
     }
 
     @Action(type = "READ", operation = "判断用户是否点赞了文章")
-    public GlobalResponse hasMe(String articleId,String userId){
-        ArticleThumbs thumb = articleThumbRepository.findByArticleIdAndUserId(articleId,userId);
+    public GlobalResponse hasMe(String articleId, String userId) {
+        ArticleThumbs thumb = articleThumbRepository.findByArticleIdAndUserId(articleId, userId);
         GlobalResponse globalResponse = new GlobalResponse();
         globalResponse.setCode(200);
-        if (thumb == null){
+        if (thumb == null) {
             globalResponse.setMessage("用户未点赞");
-            globalResponse.getData().put("hasme",false);
-        }else {
+            globalResponse.getData().put("hasme", false);
+        } else {
             globalResponse.setMessage("用户已点赞");
-            globalResponse.getData().put("hasme",true);
+            globalResponse.getData().put("hasme", true);
         }
         return globalResponse;
     }
 
-    @Action(type = "CREATE",operation = "点赞")
-    public GlobalResponse thumb(String articleId,String userId){
+    @Action(type = "CREATE", operation = "点赞")
+    public GlobalResponse thumb(String articleId, String userId) {
 
         // 记录用点赞记录
         ArticleThumbs thumb = new ArticleThumbs();
@@ -100,10 +110,10 @@ public class ArticleService {
 
         // 添加点赞数
         Article article = articleRepository.findById(articleId).get();
-        article.setThumbs(article.getThumbs()+1);
+        article.setThumbs(article.getThumbs() + 1);
         articleRepository.save(article);
 
-        GlobalResponse response = new GlobalResponse(200,"点赞成功");
+        GlobalResponse response = new GlobalResponse(200, "点赞成功");
         return response;
     }
 

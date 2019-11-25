@@ -25,11 +25,17 @@ public class ArticleController {
     @PostMapping("/articles")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('CREATE')")
-    public GlobalResponse publishArticle(@RequestBody Article article) {
-        return articleService.sava(article);
+    public GlobalResponse publishArticle(@RequestParam("authorId") String authorId,
+                                         @RequestParam("author") String author,
+                                         @RequestParam(value = "questionId", defaultValue = "") String questionId,
+                                         @RequestParam("title") String title,
+                                         @RequestParam("type") String type,
+                                         @RequestParam("content") String content,
+                                         @RequestParam("status") int status) {
+        return articleService.save(authorId, author, questionId, title, type, content, status);
     }
 
-    @ApiOperation(value = "修改文章",notes = "修改文章")
+    @ApiOperation(value = "修改文章", notes = "修改文章")
     @PutMapping("/articles")
     @PreAuthorize("hasRole('CREATE')")
     @ResponseStatus(HttpStatus.OK)
@@ -37,15 +43,15 @@ public class ArticleController {
                                       @RequestParam("userId") String userId,
                                       @RequestParam("status") int status,
                                       @RequestParam("title") String title,
-                                      @RequestParam("content") String content){
-        return articleService.update(articleId,userId,status,title,content);
+                                      @RequestParam("content") String content) {
+        return articleService.update(articleId, userId, status, title, content);
     }
 
-    @ApiOperation(value = "用户删除文章",notes = "用户删除文章")
+    @ApiOperation(value = "用户删除文章", notes = "用户删除文章")
     @DeleteMapping("/articles")
     @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
     @ResponseStatus(HttpStatus.OK)
-    public GlobalResponse deleteArticle(@RequestParam("articleId") String articleId){
+    public GlobalResponse deleteArticle(@RequestParam("articleId") String articleId) {
         return articleService.delete(articleId);
     }
 
@@ -74,10 +80,9 @@ public class ArticleController {
     public GlobalResponse comment(@RequestParam("articleId") String articleId,
                                   @RequestParam("userId") String userId,
                                   @RequestParam("content") String content,
-                                  @RequestParam(value = "commentPid",defaultValue = "") String commentPid) {
+                                  @RequestParam(value = "commentPid", defaultValue = "") String commentPid) {
         return commentService.save(articleId, userId, content, commentPid);
     }
-
 
 
 }

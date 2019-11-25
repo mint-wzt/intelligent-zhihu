@@ -19,11 +19,11 @@ public class Article {
     @Column(name = "id")
     private String id;
 
-//    @Column(name = "topic_id")
-//    private String topicId;
+    @Column(name = "question_id")
+    private String questionId;
 
-    @Column(name = "is_article")
-    private int isArticle;
+//    @Column(name = "is_article")
+//    private int isArticle;
 
     @Column(name = "title")
     private String title;
