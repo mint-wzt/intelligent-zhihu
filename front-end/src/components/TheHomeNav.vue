@@ -4,7 +4,7 @@
             <div class="md-toolbar-row">
                 <div class="md-toolbar-section-start">
                     <h3 class="md-title">你问我答</h3>
-                    <md-button :to="{name:'home'}">首页</md-button>
+                    <md-button :to="{name:'recommend'}">首页</md-button>
                     <md-button to="#">发现</md-button>
                     <md-button to="#">等你来答</md-button>
                 </div>
@@ -74,7 +74,7 @@
                         </md-avatar>
                         <md-menu-content>
                             <md-menu-item>
-                                <md-button>
+                                <md-button :to="{name:'myarticle'}">
                                     <md-icon>person</md-icon> 我的主页
                                 </md-button>
                             </md-menu-item>
@@ -83,8 +83,13 @@
                                     <md-icon>settings</md-icon> 我的设置
                                 </md-button>
                             </md-menu-item>
-                            <md-menu-item>
+                            <md-menu-item v-if="isAdmin">
                                 <md-button>
+                                    <md-icon>build</md-icon> 管理页面
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button @click="loginout">
                                     <md-icon>power_settings_new</md-icon> 退出登录
                                 </md-button>
                             </md-menu-item>
@@ -104,12 +109,13 @@
     import {
         USER_SET_USER_INFO,
         USER_SET_USER_TOKEN,
+        USER_CLEAR_ALL,
     } from '@/store/mutations-type'
 
     export default {
         name: "TheHomeNav",
         computed: {
-            ...mapGetters('user',['isLogin']),
+            ...mapGetters('user',['isLogin', 'isAdmin']),
             ...mapState('user', {
                 avatar: state => state.avatar_url,
             })
@@ -132,7 +138,6 @@
                 password: "",
                 error: "",
                 showSnackbar: false,
-                err: null
             }
         },
         methods: {
@@ -153,13 +158,46 @@
                             this.showSnackbar = true;
                         } else {
                             this.$store.commit("user/"+USER_SET_USER_TOKEN, resp.data.data);
-                            this.$store.commit("user/"+USER_SET_USER_INFO, resp.data.data);
-                            this.showSnackbar = false;
+                            this.$store.commit("user/"+USER_SET_USER_INFO, {
+                                ...resp.data.data,
+                                user_id: resp.data.data.id,
+                                avatar_url: resp.data.data.avtar_url
+                            });
+                            this.showDialog = false;
+                            this.$localStorage.set('userInfo', {
+                                user_id : resp.data.data.id,
+                                avatar_url : resp.data.data.avtar_url,
+                                username : resp.data.data.username,
+                                nickname : resp.data.data.nickname,
+                                description : resp.data.data.description ? resp.data.data.description : "",
+                                career : resp.data.data.career ? resp.data.data.career : "",
+                                education : resp.data.data.education,
+                                name : resp.data.data.name ? resp.data.data.name: "",
+                                gender : resp.data.data.gender ? resp.data.data.gender: "",
+                                birthday : resp.data.data.birthday ? resp.data.data.birthday: "",
+                                phone : resp.data.data.phone ? resp.data.data.phone: "",
+                                email : resp.data.data.email,
+                                qq : resp.data.data.qq ? resp.data.data.qq : "",
+                                role : resp.data.data.role,
+                                token: resp.data.data.token,
+                            })
                         }
                     }
                 }).catch(function (error) {
                     console.log(error)
                 })
+            },
+
+            loginout() {
+                this.$localStorage.set('userInfo', null);
+                this.$store.commit("user/"+USER_CLEAR_ALL);
+            }
+        },
+        created() {
+            const userinfo = this.$localStorage.get('userInfo', null);
+            if (userinfo) {
+                this.$store.commit("user/"+USER_SET_USER_TOKEN, userinfo);
+                this.$store.commit("user/"+USER_SET_USER_INFO, userinfo);
             }
         }
     }

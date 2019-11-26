@@ -50,7 +50,10 @@
         data () {
             return {
             }
-        }
+        },
+        methods: {
+
+        },
     }
 </script>
 

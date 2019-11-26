@@ -31,6 +31,8 @@
 <script>
     import TheHomeNav from '@/components/TheHomeNav.vue'
     import {mapState} from 'vuex'
+    import qs from 'querystring'
+
     export default {
         name: "TheArticleEditPage",
         components: {
@@ -51,33 +53,36 @@
           publishArticle() {
               this.$http.post(
                   "/api/article/articles",
-                  {
-                      authorId: this.authorId,
-                      type: this.articleType,
-                      author: this.author,
-                      content: this.content,
-                      status: 1,
-                      token: this.token,
-                  },
+                  qs.stringify(
+                      {
+                          authorId: this.authorId,
+                          type: this.articleType,
+                          author: this.author,
+                          content: this.content,
+                          status: 1,
+                          isArticle: 1,
+                          title: this.title,
+                      }
+                  ),
                   {
                       headers: {
-                          "Authorization": this.token
+                          "Authorization": this.token,
+                          'content-type': 'application/x-www-form-urlencoded'
                       }
                   }
               ).then(resp => {
                     if (resp.status === 200) {
                         if (resp.data.code === 200) {
-                            this.$route.push({
+                            this.$router.push({
                                 name:"article_detail",
                                 params: {
-                                    id: resp.data.data.id,
-                                    author: resp.data.data.author,
-                                    title: resp.data.data.title,
-                                    content: resp.data.data.content,
+                                    articleInfo: resp.data.data.articleInfo
                                 }
                             })
                         }
                     }
+              }).catch(err => {
+                  console.log(err)
               })
 
           }

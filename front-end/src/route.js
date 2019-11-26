@@ -1,11 +1,10 @@
 const routes = [
     {
         path: '/',
-        name: 'home',
         component: () => import('@/pages/TheHomePage.vue'),
         children: [
             {
-                path:'/tabs/recommend',
+                path:'',
                 name: 'recommend',
                 component: () => import('@/components/tabs/TheRecommend.vue')
             }, {
@@ -27,7 +26,18 @@ const routes = [
         name: 'article_detail',
         props: true,
         component: () => import('@/pages/TheArticleDetailPage.vue')
-    },
+    }, {
+        path: "/person/me",
+        props: true,
+        component: () => import('@/pages/ThePersonPage.vue'),
+        children: [
+            {
+                path: "",
+                name: "myarticle",
+                component: () => import('@/components/tabs/TheMyArticles.vue')
+            }
+        ]
+    }
 ];
 
 export default routes

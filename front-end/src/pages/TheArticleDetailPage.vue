@@ -3,13 +3,14 @@
         <the-home-nav/>
         <div class="md-layout md-alignment-top-center">
             <div class="md-layout-item md-size-90">
-                <h1>{{title}}</h1>
-                <h3>{{author}}</h3>
+                <h1>{{articleInfo.title}}</h1>
+                <h3>{{articleInfo.author}}</h3>
                 <mavon-editor
                         defaultOpen="preview"
                         :editable="false"
                         :toolbarsFlag="false"
-                        v-model="content"
+                        :tabSize="4"
+                        v-model="articleInfo.content"
                         :subfield="false"
                         :toolbars="{}"
                 ></mavon-editor>
@@ -27,18 +28,8 @@
             TheHomeNav
         },
         props: {
-            id: {
-                type: String,
-                required: true
-            },
-            title: {
-                type: String,
-            },
-            author: {
-                type: String
-            },
-            content: {
-                type: String
+            articleInfo: {
+                type: Object,
             }
         },
         data () {

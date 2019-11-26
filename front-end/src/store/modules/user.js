@@ -1,6 +1,7 @@
 import {
     USER_SET_USER_INFO,
     USER_SET_USER_TOKEN,
+    USER_CLEAR_ALL,
 } from '../mutations-type'
 
 const state = {
@@ -22,9 +23,13 @@ const state = {
 };
 
 const getters = {
-  isLogin: state => {
-      return state.token != null
-  }
+    isLogin: state => {
+        return state.token != null && state.token.trim().length !== 0
+    },
+    isAdmin: state => {
+        return state.role === 'ROLE_ADMIN'
+    }
+
 };
 
 const actions = {
@@ -35,20 +40,37 @@ const mutations = {
       state.token = token
     },
     [USER_SET_USER_INFO](state, payload) {
-        state.user_id = payload.id;
-        state.avatar_url = payload.avtar_url;
-        state.username = payload.username;
-        state.nickname = payload.nickname;
+        state.user_id = payload.user_id ? payload.user_id: "";
+        state.avatar_url = payload.avatar_url ? payload.avatar_url: "";
+        state.username = payload.username ? payload.username: "";
+        state.nickname = payload.nickname ? payload.nickname: "";
         state.description = payload.description ? payload.description : "";
         state.career = payload.career ? payload.career : "";
-        state.education = payload.education;
+        state.education = payload.education ? payload.education : "";
         state.name = payload.name ? payload.name: "";
         state.gender = payload.gender ? payload.gender: "";
         state.birthday = payload.birthday ? payload.birthday: "";
         state.phone = payload.phone ? payload.phone: "";
-        state.email = payload.email;
+        state.email = payload.email ? payload.email: "";
         state.qq = payload.qq ? payload.qq : "";
-        state.role = payload.role;
+        state.role = payload.role ? payload.role : "";
+    },
+    [USER_CLEAR_ALL](state) {
+        state.user_id =  "";
+        state.avatar_url = "";
+        state.username = "";
+        state.nickname = "";
+        state.description = "";
+        state.career =  "";
+        state.education =  "";
+        state.name =  "";
+        state.gender =  "";
+        state.birthday =  "";
+        state.phone =  "";
+        state.email =  "";
+        state.qq = "";
+        state.role = "";
+        state.token = null;
     }
 };
 

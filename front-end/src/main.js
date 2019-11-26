@@ -14,6 +14,10 @@ import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import axios from 'axios'
 import store from './store'
+import VueLocalStorage from "vue-localstorage";
+import 'vue-croppa/dist/vue-croppa.css'
+
+import Croppa  from "vue-croppa";
 
 Vue.config.productionTip = false;
 
@@ -22,6 +26,8 @@ Vue.use(vueMaterial);
 Vue.use(VueRouter);
 Vue.use(VueInstant);
 Vue.use(mavonEditor);
+Vue.use(VueLocalStorage);
+Vue.use(Croppa );
 
 const axios_instance = axios.create({
   baseURL: 'http://localhost:8081',
@@ -31,6 +37,11 @@ const axios_instance = axios.create({
 Vue.prototype.$http = axios_instance;
 
 new Vue({
+  localStorage: {
+    userInfo: {
+      type: Object,
+    }
+  },
   router: new VueRouter({routes: Routes}),
   store,
   render: h => h(App),

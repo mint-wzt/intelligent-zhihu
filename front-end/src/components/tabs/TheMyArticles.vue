@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="items.length === 0">没有数据???</div>
+        <div class="md-title">我的文章</div>
         <md-card v-for="item in items" :key="item.id" class="card-margin">
             <md-card-header>
                 <md-card-header-text>
@@ -10,7 +10,7 @@
             <md-card-content>
                 {{item.content}}
                 <md-button
-                    :to="{
+                        :to="{
                         name:'article_detail',
                         params: {
                             id : item.id,
@@ -22,7 +22,7 @@
                 >阅读全文</md-button>
             </md-card-content>
             <md-card-actions>
-                <md-button>赞同</md-button>
+                <md-button :disabled="true" >赞同</md-button>
                 <md-button>反对</md-button>
                 <md-button>{{item.comment}} 条评论</md-button>
                 <md-button>分享</md-button>
@@ -35,9 +35,7 @@
 
 <script>
     export default {
-        name: "TheRecommend",
-        components: {
-        },
+        name: "TheMyArticles",
         data() {
             return {
                 items: [
@@ -64,7 +62,7 @@
 </script>
 
 <style scoped>
-    .card-margin {
-        margin-bottom: 1rem;
-    }
+.card-margin {
+    margin-top: .5rem;
+}
 </style>
