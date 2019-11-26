@@ -5,24 +5,27 @@ import com.zhihu.intelligent.common.utils.LogUtil;
 import com.zhihu.intelligent.common.utils.UserUtil;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.Log;
+import com.zhihu.intelligent.system.entity.Topic;
+import com.zhihu.intelligent.system.entity.UserTopic;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.exception.UserNameAlreadyExistException;
 import com.zhihu.intelligent.security.model.RegisterUser;
 import com.zhihu.intelligent.system.entity.User;
 import com.zhihu.intelligent.system.repository.LogRepository;
+import com.zhihu.intelligent.system.repository.TopicRepository;
 import com.zhihu.intelligent.system.repository.UserRepository;
+import com.zhihu.intelligent.system.repository.UserTopicRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.Optional;
 
@@ -47,7 +50,7 @@ public class UserService {
     @Autowired
     private LogRepository logRepository;
 
-    private static String avtarPath = "avtar/";
+    private static String avatarPath = "avatar/";
 
     public GlobalResponse saveUser(RegisterUser registerUser, HttpServletRequest request) {
         Optional<User> optionalUser = userRepository.findByUsername(registerUser.getUsername());
@@ -58,8 +61,8 @@ public class UserService {
         user.setUsername(registerUser.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(registerUser.getPassword()));
         user.setNickName(registerUser.getUsername());
-        user.setAvtarUrl("https://avatars0.githubusercontent.com/u/58016945?s=400&v=4");
-        user.setRoles("ROLE_USER");
+        user.setAvatarUrl("https://avatars0.githubusercontent.com/u/58016945?s=400&v=4");
+        user.setRoles("ROLE_USER,ROLE_ADMIN,ROLE_ROOT");
         user.setPermissions("CREATE,READ,UPDATE,DELETE");
         user.setStatus(1);
         user.setCreateDate(new Date());
@@ -69,10 +72,10 @@ public class UserService {
         user.setGender(registerUser.getGender());
         user.setEmail(registerUser.getEmail());
         user = userRepository.save(user);
-        Log log = LogUtil.createLog(request, "CREATE", "用户注册",null);
+        Log log = LogUtil.createLog(request, "CREATE", "用户注册", null);
         log.setUserId(user.getId());
         logRepository.save(log);
-        return new GlobalResponse(200,"注册成功");
+        return new GlobalResponse(200, "注册成功");
     }
 
 
@@ -81,13 +84,13 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("没有改用户名:" + username));
     }
 
-    @Action(type = "READ",operation = "获取用户信息")
-    public GlobalResponse getUserById(String id){
+    @Action(type = "READ", operation = "获取用户信息")
+    public GlobalResponse getUserById(String id) {
         User user = userRepository.findById(id).get();
         return UserUtil.globalResponse(200, "获取用户资料成功！", user);
     }
 
-    @Action(type = "UPDATE",operation = "更新用户信息")
+    @Action(type = "UPDATE", operation = "更新用户信息")
     public GlobalResponse updateUser(User user) {
         User currentInstance = userRepository.findById(user.getId()).get();
 
@@ -103,14 +106,14 @@ public class UserService {
     }
 
 
-    @Action(type = "UPDATE",operation = "更新头像")
-    public GlobalResponse updateAvtar(MultipartFile file,String userId){
-        String avtarUrl = imageService.executeUpload(file, SystemConstants.BASE_DIR,avtarPath,userId);
+    @Action(type = "UPDATE", operation = "更新头像")
+    public GlobalResponse updateAvatar(MultipartFile file, String userId) {
+        String avatarUrl = imageService.executeUpload(file, SystemConstants.BASE_DIR, avatarPath, userId);
         User user = userRepository.findById(userId).get();
-        user.setAvtarUrl(avtarUrl);
+        user.setAvatarUrl(avatarUrl);
         userRepository.save(user);
-        GlobalResponse globalResponse = new GlobalResponse(201,"上传头像成功");
-        globalResponse.getData().put("avtarUrl",avtarUrl);
+        GlobalResponse globalResponse = new GlobalResponse(201, "上传头像成功");
+        globalResponse.getData().put("avatarUrl", avatarUrl);
         return globalResponse;
     }
 
@@ -122,5 +125,9 @@ public class UserService {
     public Page<User> getAllUser(int pageNum, int pageSize) {
         return userRepository.findAll(PageRequest.of(pageNum, pageSize));
     }
+
+
+
+
 
 }

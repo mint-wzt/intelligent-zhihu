@@ -11,4 +11,5 @@ public interface ArticleRepository extends JpaRepository<Article,String>{
     //通过用户名查找文章
     List<Article> findArticlesByAuthor(String author);
 
+
 }

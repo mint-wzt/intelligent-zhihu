@@ -56,7 +56,7 @@ public class UserUtil {
         JSONObject data = globalResponse.getData();
         data.put("id",user.getId());
         data.put("username", user.getUsername());
-        data.put("avtar_url",user.getAvtarUrl());
+        data.put("avtar_url",user.getAvatarUrl());
         data.put("nickname", user.getNickName());
         data.put("description", user.getDescription());//
         data.put("industry", user.getIndustry());

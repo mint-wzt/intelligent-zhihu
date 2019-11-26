@@ -8,8 +8,8 @@ import java.util.Date;
 
 @Entity
 @Data
-@Table(name = "article_thumb")
-public class ArticleThumbs implements Serializable {
+// 用户文章点赞表
+public class UserArticle implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

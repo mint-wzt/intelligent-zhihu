@@ -6,8 +6,6 @@ import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,17 +22,19 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/register")
-    @ApiOperation(value = "用户注册",notes = "用户注册")
-    public GlobalResponse registerUser(@RequestBody RegisterUser registerUser,HttpServletRequest request) {
-        return userService.saveUser(registerUser,request);
+    @ApiOperation(value = "用户注册", notes = "用户注册")
+    public GlobalResponse registerUser(@RequestBody RegisterUser registerUser, HttpServletRequest request) {
+        return userService.saveUser(registerUser, request);
     }
 
     @PostMapping("/login")
-    @ApiOperation(value = "用户登录",notes = "用户登录")
-    public void login(@RequestBody LoginUser loginUser){ }
+    @ApiOperation(value = "用户登录", notes = "用户登录")
+    public void login(@RequestBody LoginUser loginUser) {
+    }
 
     @PostMapping("/logout")
-    @ApiOperation(value = "退出登录",notes = "退出登录")
-    public void logout(){ }
+    @ApiOperation(value = "退出登录", notes = "退出登录")
+    public void logout() {
+    }
 
 }

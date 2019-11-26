@@ -29,8 +29,8 @@ public class User{
     @Column(name = "nickname")
     private String nickName;
 
-    @Column(name = "avtar_url")
-    private String avtarUrl;
+    @Column(name = "avatar_url")
+    private String avatarUrl;
 
     @Column(name = "role")
     private String roles;

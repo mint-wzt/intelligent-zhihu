@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/article")
+@RequestMapping("/article")
 public class ArticleController {
 
     @Autowired
@@ -45,6 +45,13 @@ public class ArticleController {
                                       @RequestParam("title") String title,
                                       @RequestParam("content") String content) {
         return articleService.update(articleId, userId, status, title, content);
+    }
+    @ApiOperation(value = "获取文章", notes = "获取文章")
+    @GetMapping("/articles")
+    @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
+    @ResponseStatus(HttpStatus.OK)
+    public GlobalResponse getArticle(@RequestParam("articleId") String articleId){
+        return articleService.getArticle(articleId);
     }
 
     @ApiOperation(value = "用户删除文章", notes = "用户删除文章")

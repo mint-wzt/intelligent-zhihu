@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -35,11 +35,12 @@ public class UserController {
     }
 
     @ApiOperation(value = "上传头像", notes = "上传头像")
-    @PostMapping("/users/avtar")
+    @PostMapping("/users/avatar")
     @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
     @ResponseStatus(HttpStatus.CREATED)
-    public GlobalResponse uploadAvtar(@RequestParam("id") String id, @RequestParam("file") MultipartFile file) {
-        return userService.updateAvtar(file, id);
+    public GlobalResponse uploadAvatar(@RequestParam("id") String id, @RequestParam("file") MultipartFile file) {
+        return userService.updateAvatar(file, id);
     }
+
 
 }
