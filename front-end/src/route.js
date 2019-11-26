@@ -7,7 +7,6 @@ const routes = [
             {
                 path:'/tabs/recommend',
                 name: 'recommend',
-                props: true,
                 component: () => import('@/components/tabs/TheRecommend.vue')
             }, {
                 path: '/tabs/attention',
@@ -19,7 +18,16 @@ const routes = [
                 component: () => import('@/components/tabs/TheHotRank.vue')
             }
         ]
-    }
+    }, {
+        path: "/article",
+        name: "article",
+        component: () => import('@/pages/TheArticleEditPage.vue')
+    }, {
+        path: "/article/detail/:id",
+        name: 'article_detail',
+        props: true,
+        component: () => import('@/pages/TheArticleDetailPage.vue')
+    },
 ];
 
 export default routes

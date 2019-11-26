@@ -9,10 +9,21 @@
             </md-card-header>
             <md-card-content>
                 {{item.content}}
-                <the-article-show
-                        :title="item.title"
-                        :content="item.content"
-                />
+<!--                <the-article-show-->
+<!--                        :title="item.title"-->
+<!--                        :content="item.content">-->
+<!--                </the-article-show>-->
+                <md-button
+                    :to="{
+                        name:'article_detail',
+                        params: {
+                            id : item.id,
+                            title: item.title,
+                            content: item.content,
+                            author: item.author
+                        }
+                    }"
+                >阅读全文</md-button>
             </md-card-content>
             <md-card-actions>
                 <md-button>赞同</md-button>
@@ -28,11 +39,9 @@
 </template>
 
 <script>
-    import TheArticleShow from '@/components/TheArticleShow.vue'
     export default {
         name: "TheRecommend",
         components: {
-            TheArticleShow
         },
         data() {
             return {

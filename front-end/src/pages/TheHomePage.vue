@@ -21,13 +21,13 @@
                 <md-card class="">
                     <md-card-header class="md-layout">
                         <div class="md-layout-item">
-                            <md-button>
+                            <md-button :to="{name:'article'}">
                                 <md-icon>description</md-icon>
                                 写回答
                             </md-button>
                         </div>
                         <div class="md-layout-item">
-                            <md-button><md-icon>edit</md-icon>写问题</md-button>
+                            <md-button :to="{name:'article'}" ><md-icon>edit</md-icon>写文章</md-button>
                         </div>
                         <div class="md-layout-item">
                             <md-button><md-icon>wb_incandescent</md-icon>写想法</md-button>
