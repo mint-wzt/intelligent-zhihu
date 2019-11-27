@@ -56,3 +56,7 @@ https://github.com/google/material-design-icons
 https://google.github.io/material-design-icons/
 
 https://www.materialpalette.com/icons
+
+[vue-croppa]
+
+https://github.com/zhanziyang/vue-croppa

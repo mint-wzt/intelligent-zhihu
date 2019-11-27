@@ -2,6 +2,7 @@ import {
     USER_SET_USER_INFO,
     USER_SET_USER_TOKEN,
     USER_CLEAR_ALL,
+    USER_SET_USER_AVATAR,
 } from '../mutations-type'
 
 const state = {
@@ -19,7 +20,8 @@ const state = {
     qq: "",
     role: "",
     avatar_url: "",
-    token: null
+    token: null,
+    industry: null,
 };
 
 const getters = {
@@ -27,7 +29,10 @@ const getters = {
         return state.token != null && state.token.trim().length !== 0
     },
     isAdmin: state => {
-        return state.role === 'ROLE_ADMIN'
+        return state.role === 'ROLE_ADMIN' || state.role === 'ROLE_ROOT'
+    },
+    isRoot: state => {
+        return state.role === 'ROLE_ROOT'
     }
 
 };
@@ -38,6 +43,9 @@ const actions = {
 const mutations = {
     [USER_SET_USER_TOKEN](state, {token}) {
       state.token = token
+    },
+    [USER_SET_USER_AVATAR](state, {avatar_url}) {
+        state.avatar_url = avatar_url;
     },
     [USER_SET_USER_INFO](state, payload) {
         state.user_id = payload.user_id ? payload.user_id: "";

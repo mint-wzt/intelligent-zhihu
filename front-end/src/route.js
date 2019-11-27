@@ -37,6 +37,35 @@ const routes = [
                 component: () => import('@/components/tabs/TheMyArticles.vue')
             }
         ]
+    }, {
+        path: '/admin',
+        props:true,
+
+        component: () => import('@/pages/TheAdminPage.vue'),
+        children: [
+            {
+                path: "",
+                name: 'admin',
+                component: () => import('@/components/TheArticleManage.vue')
+            },
+            {
+                path: "/user",
+                name: "manage_user",
+                component: () => import('@/components/TheUserManage.vue')
+            }
+        ]
+    }, {
+        path: "/register",
+        name: "register",
+        component: () => import('@/pages/TheRegisterPage.vue')
+    }, {
+        path: "/login",
+        name: "login",
+        component: () => import('@/pages/TheLoginPage.vue')
+    }, {
+        path: '/userinfo',
+        name: 'userinfo_edit',
+        component: () => import('@/pages/ThePersonInfoEditPage.vue')
     }
 ];
 

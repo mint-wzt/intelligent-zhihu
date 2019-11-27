@@ -34,31 +34,39 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex'
     export default {
         name: "TheRecommend",
         components: {
         },
         data() {
             return {
-                items: [
-                    {
-                        id: 1,
-                        title: "10分钟看懂Docker和K8S",
-                        content: "小枣君： 2010年，几个搞IT的年轻人，在美国旧金山成立了一家名叫“dotCloud”的公司。 " +
-                            "这家公司主要提供基于PaaS的云计算技术服务。具体来说，是和LXC有关的容器技术。 后来，dotCloud公…",
-                        thumbs: 1200,
-                        comment: 49,
-                        author: '你的名字'
-                    }, {
-                        id: 2,
-                        title: "10分钟看懂Docker和K8S",
-                        content: "在美国旧金山成立了一家名叫“dotCloud”的公司。 " +
-                            "这家公司主要提供基于PaaS的云计算技术服务。具体来说，是和LXC有关的容器技术。 后来，dotCloud公…",
-                        thumbs: 1200,
-                        comment: 49
-                    }
-                ]
+                items: []
             }
+        },
+        computed: {
+            ...mapState('user', ['user_id', 'token'])
+        },
+        methods: {
+            getRecommendArticle() {
+                this.$http.get('/article/articles/recommend',
+                    {
+                        params: {
+                            userId: this.user_id
+                        },
+                        headers: {
+                            "Authorization": this.token,
+                        }
+                    }
+                ).then(resp => {
+                    if (resp.status === 200) {
+                        this.items.push(resp.data.data.articleList);
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.getRecommendArticle()
         }
     }
 </script>

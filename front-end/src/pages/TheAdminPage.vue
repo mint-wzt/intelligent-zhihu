@@ -1,32 +1,11 @@
 <template>
     <div>
-        <md-toolbar class="md-transparent">
-            <div class="md-toolbar-row">
-                <div class="md-toolbar-section-start">
-                    <h3 class="md-title">你问我答</h3>
-                    <md-button :to="{name:'recommend'}">首页</md-button>
-                    <md-button to="#">发现</md-button>
-                    <md-button to="#">等你来答</md-button>
-                </div>
-                <vue-instant v-model="searchBoxValue"
-                             :suggestions="suggestions"
-                             :placeholder="placeholder"
-                             :show-autocomplete="true"
-                             :suggestion-attribute="suggestion_attribute"
-                             type="twitter"
-                />
-                <div class="md-toolbar-section-end">
-                    <md-button>
-                        <md-icon>notifications</md-icon>
-                    </md-button>
-                    <md-button>
-                        <md-icon>sms</md-icon>
-                    </md-button>
-
-                    <md-button v-if="isLogin === false" :to="{name:'login'}" class="md-raised">登录</md-button>
-
+        <el-container>
+            <el-header>
+                <md-toolbar>
+                    <h3 class="md-title" style="flex: 1">你问我答后台管理系统</h3>
+                    <md-button :to="{name:'recommend'}">返回首页</md-button>
                     <md-menu md-align-trigger v-if="isLogin">
-
                         <md-avatar md-menu-trigger>
                             <img :src="avatar" alt="avatar"/>
                         </md-avatar>
@@ -51,17 +30,34 @@
                                     <md-icon>power_settings_new</md-icon> 退出登录
                                 </md-button>
                             </md-menu-item>
-
                         </md-menu-content>
                     </md-menu>
-                    <md-button class="md-primary md-raised" :to="{name:'register'}">注册</md-button>
-                </div>
-            </div>
-
-        </md-toolbar>
-
+                </md-toolbar>
+            </el-header>
+            <el-container>
+                <el-aside width="10rem">
+                    <el-menu
+                            background-color="#545c64"
+                            text-color="#fff"
+                            active-text-color="#ffd04b"
+                            style="min-height: 900px;"
+                            default-active=""
+                            :router="true"
+                    >
+                        <el-menu-item index="/admin" >
+                            <span >文章管理</span>
+                        </el-menu-item>
+                        <el-menu-item index="/user">
+                            <span >用户管理</span>
+                        </el-menu-item>
+                    </el-menu>
+                </el-aside>
+                <el-main>
+                    <router-view/>
+                </el-main>
+            </el-container>
+        </el-container>
     </div>
-
 </template>
 
 <script>
@@ -69,31 +65,15 @@
     import {
         USER_SET_USER_INFO,
         USER_SET_USER_TOKEN,
-        USER_CLEAR_ALL,
+        USER_CLEAR_ALL
     } from '@/store/mutations-type'
-
     export default {
-        name: "TheHomeNav",
+        name: "TheAdminPage",
         computed: {
-            ...mapGetters('user',['isLogin', 'isAdmin']),
+            ...mapGetters('user',['isLogin', 'isAdmin', 'isRoot']),
             ...mapState('user', {
                 avatar: state => state.avatar_url,
             })
-        },
-        data () {
-            return {
-                searchBoxValue: '',
-                suggestions: [
-                ],
-                suggestion_attribute: 'title',
-                placeholder: '搜点什么',
-            }
-        },
-        methods: {
-            loginout() {
-                this.$localStorage.set('userInfo', null);
-                this.$store.commit("user/"+USER_CLEAR_ALL);
-            }
         },
         created() {
             const userinfo = this.$localStorage.get('userInfo', null);
@@ -101,10 +81,18 @@
                 this.$store.commit("user/"+USER_SET_USER_TOKEN, userinfo);
                 this.$store.commit("user/"+USER_SET_USER_INFO, userinfo);
             }
+        },
+        methods: {
+            loginout() {
+                this.$localStorage.set('userInfo', null);
+                this.$store.commit("user/"+USER_CLEAR_ALL);
+            }
         }
     }
 </script>
 
 <style scoped>
-
+.el-header {
+    padding: 0;
+}
 </style>
