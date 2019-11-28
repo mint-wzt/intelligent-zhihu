@@ -57,8 +57,9 @@ public class QuestionController {
     @DeleteMapping("/questions")
     @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
     @ResponseStatus(HttpStatus.OK)
-    public GlobalResponse delete(@RequestParam("questionId") String questionId) {
-        return questionService.delete(questionId);
+    public GlobalResponse delete(@RequestParam("questionId") String questionId,
+                                 @RequestParam("userId") String userId) {
+        return questionService.delete(questionId,userId);
     }
 
     @ApiOperation(value = "获取用户关注的问题", notes = "获取用户关注的问题")

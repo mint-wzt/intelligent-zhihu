@@ -1,11 +1,13 @@
 package com.zhihu.intelligent.system.service;
 
 import com.zhihu.intelligent.system.aop.Action;
+import com.zhihu.intelligent.system.entity.User;
 import com.zhihu.intelligent.system.entity.UserQuestion;
 import com.zhihu.intelligent.system.entity.Question;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.UserQuestionRepository;
 import com.zhihu.intelligent.system.repository.QuestionRepository;
+import com.zhihu.intelligent.system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,9 @@ public class QuestionService {
     @Autowired
     private UserQuestionRepository focusRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Action(type = "CREATE", operation = "提出问题")
     public GlobalResponse save(String userId, String content, String type) {
         // 保存问题
@@ -34,6 +39,12 @@ public class QuestionService {
         questionRepository.save(question);
 
         // 推送消息
+
+
+        // 用户问题提出数+1
+        User user = userRepository.findById(userId).get();
+        user.setQuestions(user.getQuestions() + 1);
+        userRepository.save(user);
 
 
         // 返回相应
@@ -71,6 +82,11 @@ public class QuestionService {
         userQuestion.setCreateAt(new Date());
         focusRepository.save(userQuestion);
 
+        // 用户关注问题数+1
+        User user = userRepository.findById(userId).get();
+        user.setFollowQuestions(user.getFollowQuestions() + 1);
+        userRepository.save(user);
+
         // 响应
         GlobalResponse response = new GlobalResponse(200, "关注问题成功");
         return response;
@@ -89,6 +105,11 @@ public class QuestionService {
 
         // 取消消息推送
 
+        // 用户关注问题数-1
+        User user = userRepository.findById(userId).get();
+        user.setFollowQuestions(user.getFollowQuestions() - 1);
+        userRepository.save(user);
+
         // 响应
         GlobalResponse response = new GlobalResponse(200, "取消关注问题成功");
         return response;
@@ -96,12 +117,17 @@ public class QuestionService {
 
     @Transactional
     @Action(type = "DELETE", operation = "删除问题")
-    public GlobalResponse delete(String questionId) {
+    public GlobalResponse delete(String questionId,String userId) {
         // 删除问题
         questionRepository.deleteById(questionId);
 
         // 删除用户问题关注
         focusRepository.deleteByQuestionId(questionId);
+
+        // 用户问题提出数-1
+        User user = userRepository.findById(userId).get();
+        user.setQuestions(user.getQuestions() + 1);
+        userRepository.save(user);
 
         // 响应
         GlobalResponse response = new GlobalResponse(200, "删除问题成功");

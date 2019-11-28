@@ -12,6 +12,9 @@ import java.util.List;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, String> {
+
+    List<Article> findByOrderByBrowsedNumsDesc();
+
     //通过用户名查找文章
     List<Article> findArticlesByAuthor(String author);
 
@@ -30,5 +33,11 @@ public interface ArticleRepository extends JpaRepository<Article, String> {
     List<Article> findArticlesWithPartOfType(@Param("type") String type);
 
 //    List<Article> findByTypeLikeOrderByBrowsedNumsDesc(String type);
+
+//    // 获取回答数
+//    int countByAuthorIdAndQuestionIdNull(String authorId);
+
+//    // 获取文章数
+//    int countByAuthorIdAndQuestionIdNotNull(String authorId);
 
 }

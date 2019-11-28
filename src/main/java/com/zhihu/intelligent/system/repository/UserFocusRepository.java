@@ -14,4 +14,10 @@ public interface UserFocusRepository extends JpaRepository<UserFocus, String> {
 
     // 获取关注列表
     List<UserFocus> findByPosUid(String userId);
+
+    // 获取关注的人数
+//    int countByPosUid(String posUid);
+
+    // 获取粉丝数
+//    int countByNegUid(String negUid);
 }

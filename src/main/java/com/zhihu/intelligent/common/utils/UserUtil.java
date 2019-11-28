@@ -50,27 +50,27 @@ public class UserUtil {
         return null;
     }
 
-    // 获取与用户相关的GlobalResponse
-    public static GlobalResponse globalResponse(int code,String message,User user){
-        GlobalResponse globalResponse = new GlobalResponse(code,message);
-        JSONObject data = globalResponse.getData();
-        data.put("id",user.getId());
-        data.put("username", user.getUsername());
-        data.put("avtar_url",user.getAvatarUrl());
-        data.put("nickname", user.getNickName());
-        data.put("description", user.getDescription());//
-        data.put("industry", user.getIndustry());
-        data.put("career", user.getCareer());
-        data.put("education", user.getEducation());
-        data.put("name", user.getName());//
-        data.put("gender", user.getGender());
-        data.put("birthday", user.getBirthday());//
-        data.put("phone", user.getPhone());//
-        data.put("email", user.getEmail());
-        data.put("qq", user.getQq());//
-        data.put("role",user.getRoles());
-        return globalResponse;
-    }
+//    // 获取与用户相关的GlobalResponse
+//    public static GlobalResponse globalResponse(int code,String message,User user){
+//        GlobalResponse globalResponse = new GlobalResponse(code,message);
+//        JSONObject data = globalResponse.getData();
+//        data.put("id",user.getId());
+//        data.put("username", user.getUsername());
+//        data.put("avtar_url",user.getAvatarUrl());
+//        data.put("nickname", user.getNickName());
+//        data.put("description", user.getDescription());//
+//        data.put("industry", user.getIndustry());
+//        data.put("career", user.getCareer());
+//        data.put("education", user.getEducation());
+//        data.put("name", user.getName());//
+//        data.put("gender", user.getGender());
+//        data.put("birthday", user.getBirthday());//
+//        data.put("phone", user.getPhone());//
+//        data.put("email", user.getEmail());
+//        data.put("qq", user.getQq());//
+//        data.put("role",user.getRoles());
+//        return globalResponse;
+//    }
 
     // 获取当前用户ID
     public static String getUserId(){

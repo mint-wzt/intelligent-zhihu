@@ -81,6 +81,14 @@ public class User{
     @Column(name = "qq")
     private String qq;
 
+    private int answers; // 回答数
+    private int articles; // 文章数
+    private int followers; // 关注的人数
+    private int fans; // 粉丝数
+    private int topics; // 关注话题数
+    private int questions; // 提问题数
+    private int followQuestions; // 关注问题数
+
 
 //    public List<SimpleGrantedAuthority> getPermissions() {
 //        List<SimpleGrantedAuthority> rolesList = new ArrayList<>();
@@ -89,10 +97,4 @@ public class User{
 //        return rolesList;
 //    }
 
-//    public List<SimpleGrantedAuthority> getPermisstions() {
-//        List<SimpleGrantedAuthority> permissionsList = new ArrayList<>();
-//        Arrays.stream(permissions.split(",")).forEach(permission ->
-//                permissionsList.add(new SimpleGrantedAuthority(permission)));
-//        return permissionsList;
-//    }
 }

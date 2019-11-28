@@ -45,7 +45,15 @@ public class UserFocusService {
         userFocus.setCreateAt(new Date());
         userFocusRepository.save(userFocus);
 
-        // 添加用户关注数？
+        // 添加用户关注数+1
+        User posUser = userRepository.findById(posUid).get();
+        posUser.setFollowers(posUser.getFollowers() + 1);
+        userRepository.save(posUser);
+
+        // 被关注者粉丝+1
+        User negUser = userRepository.findById(negUid).get();
+        negUser.setFans(negUser.getFans() + 1);
+        userRepository.save(negUser);
 
         GlobalResponse response = new GlobalResponse(200, "关注成功");
         return response;
@@ -57,7 +65,15 @@ public class UserFocusService {
         // 保存关注用户记录
         userFocusRepository.deleteByPosUidAndNegUid(posUid, negUid);
 
-        // 减少用户关注数？
+        // 减少用户关注数-1
+        User posUser = userRepository.findById(posUid).get();
+        posUser.setFollowers(posUser.getFollowers() - 1);
+        userRepository.save(posUser);
+
+        // 被关注者粉丝-1
+        User negUser = userRepository.findById(negUid).get();
+        negUser.setFans(negUser.getFans() - 1);
+        userRepository.save(negUser);
 
         GlobalResponse response = new GlobalResponse(200, "取消关注成功");
         return response;
@@ -69,14 +85,14 @@ public class UserFocusService {
         // 获取关注用户ID
         List<UserFocus> focusList = userFocusRepository.findByPosUid(userId);
 
-        GlobalResponse response = new GlobalResponse(200,"获取用户列表成功");
+        GlobalResponse response = new GlobalResponse(200, "获取用户列表成功");
         if (focusList != null) {
             List<String> userIdList = new ArrayList<>();
             for (UserFocus userFocus : focusList) {
                 userIdList.add(userFocus.getNegUid());
             }
             List<User> users = userRepository.findAllById(userIdList);
-            response.getData().put("users",users);
+            response.getData().put("users", users);
         }
         return response;
     }

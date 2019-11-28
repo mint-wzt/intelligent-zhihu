@@ -24,4 +24,14 @@ public class SysTopicController {
                               @RequestParam("create_uid") String createUid){
         return topicService.add(name,introduction,createUid);
     }
+
+    @ApiOperation(value = "查看所有话题", notes = "查看所有话题")
+    @GetMapping("/topics")
+    @PreAuthorize("hasAnyRole('ADMIN','ROOT')")
+    @ResponseStatus(HttpStatus.OK)
+    public GlobalResponse getAllTopics(){
+        return topicService.getAllTopics();
+    }
+
+
 }

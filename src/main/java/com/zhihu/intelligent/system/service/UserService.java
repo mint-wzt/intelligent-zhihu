@@ -5,16 +5,11 @@ import com.zhihu.intelligent.common.utils.LogUtil;
 import com.zhihu.intelligent.common.utils.UserUtil;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.Log;
-import com.zhihu.intelligent.system.entity.Topic;
-import com.zhihu.intelligent.system.entity.UserTopic;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.exception.UserNameAlreadyExistException;
 import com.zhihu.intelligent.security.model.RegisterUser;
 import com.zhihu.intelligent.system.entity.User;
-import com.zhihu.intelligent.system.repository.LogRepository;
-import com.zhihu.intelligent.system.repository.TopicRepository;
-import com.zhihu.intelligent.system.repository.UserRepository;
-import com.zhihu.intelligent.system.repository.UserTopicRepository;
+import com.zhihu.intelligent.system.repository.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,7 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.Optional;
 
@@ -50,6 +44,23 @@ public class UserService {
     @Autowired
     private LogRepository logRepository;
 
+    @Autowired
+    private ArticleRepository articleRepository;
+
+    @Autowired
+    private UserFocusRepository userFocusRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private UserTopicRepository userTopicRepository;
+
+    @Autowired
+    private UserQuestionRepository userQuestionRepository;
+
+
+
     private static String avatarPath = "avatar/";
 
     public GlobalResponse saveUser(RegisterUser registerUser, HttpServletRequest request) {
@@ -62,7 +73,7 @@ public class UserService {
         user.setPassword(bCryptPasswordEncoder.encode(registerUser.getPassword()));
         user.setNickName(registerUser.getUsername());
         user.setAvatarUrl("https://avatars0.githubusercontent.com/u/58016945?s=400&v=4");
-        user.setRoles("ROLE_USER,ROLE_ADMIN,ROLE_ROOT");
+        user.setRoles("ROLE_USER");
         user.setPermissions("CREATE,READ,UPDATE,DELETE");
         user.setStatus(1);
         user.setCreateDate(new Date());
@@ -87,7 +98,9 @@ public class UserService {
     @Action(type = "READ", operation = "获取用户信息")
     public GlobalResponse getUserById(String id) {
         User user = userRepository.findById(id).get();
-        return UserUtil.globalResponse(200, "获取用户资料成功！", user);
+        GlobalResponse globalResponse = new GlobalResponse(200, "获取用户资料成功！");
+        globalResponse.getData().put("userInfo",user);
+        return globalResponse;
     }
 
     @Action(type = "UPDATE", operation = "更新用户信息")
@@ -102,7 +115,9 @@ public class UserService {
         currentInstance.setModifiedID(modifiedID);
         currentInstance.setModifiedDate(new Date());
         userRepository.save(currentInstance);
-        return UserUtil.globalResponse(200, "更新用户资料成功!", currentInstance);
+        GlobalResponse globalResponse = new GlobalResponse(200, "更新用户资料成功!");
+        globalResponse.getData().put("userInfo",currentInstance);
+        return globalResponse;
     }
 
 
@@ -125,9 +140,4 @@ public class UserService {
     public Page<User> getAllUser(int pageNum, int pageSize) {
         return userRepository.findAll(PageRequest.of(pageNum, pageSize));
     }
-
-
-
-
-
 }

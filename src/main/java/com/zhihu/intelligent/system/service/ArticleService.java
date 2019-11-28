@@ -3,13 +3,11 @@ package com.zhihu.intelligent.system.service;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.Article;
 import com.zhihu.intelligent.system.entity.Question;
+import com.zhihu.intelligent.system.entity.User;
 import com.zhihu.intelligent.system.entity.UserArticle;
 import com.zhihu.intelligent.system.exception.DeleteFailedException;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
-import com.zhihu.intelligent.system.repository.ArticleRepository;
-import com.zhihu.intelligent.system.repository.QuestionRepository;
-import com.zhihu.intelligent.system.repository.UserArticleRepository;
-import com.zhihu.intelligent.system.repository.CommentRepository;
+import com.zhihu.intelligent.system.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,12 +29,18 @@ public class ArticleService {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Action(type = "CREATE", operation = "发布文章")
     public GlobalResponse save(String authorId, String author, String questionId,
                                String title, String type, String content, int status) {
         Article article = new Article();
         article.setAuthorId(authorId);
         article.setAuthor(author);
+        if (questionId == "") {
+            questionId = null;
+        }
         article.setQuestionId(questionId);
         article.setTitle(title);
         article.setType(type);
@@ -44,6 +48,15 @@ public class ArticleService {
         article.setStatus(status);
         article.setCreateDate(new Date());
         Article art = articleRepository.save(article);
+
+        // 添加文章数或者回答数
+        User user = userRepository.findById(authorId).get();
+        if (questionId == null) {
+            user.setArticles(user.getArticles() + 1);
+        } else {
+            user.setAnswers(user.getAnswers() + 1);
+        }
+        userRepository.save(user);
 
         GlobalResponse globalResponse = new GlobalResponse(200, "发布文章成功");
         globalResponse.getData().put("articleInfo", art);
@@ -99,6 +112,16 @@ public class ArticleService {
 
             // 删除评论表里的评论记录
             commentRepository.deleteByArticleId(articleId);
+
+            // 文章数或回答数-1
+            Article article = articleRepository.findById(articleId).get();
+            User user = userRepository.findById(article.getAuthorId()).get();
+            if (article.getQuestionId() == null) {
+                user.setArticles(user.getArticles() - 1);
+            } else {
+                user.setAnswers(user.getAnswers() - 1);
+            }
+
         } catch (Exception e) {
             throw new DeleteFailedException("删除出错");
         }

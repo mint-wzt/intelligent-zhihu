@@ -18,4 +18,7 @@ public interface UserQuestionRepository extends JpaRepository<UserQuestion,Strin
 
     // 查询用户关注的所有问题
     List<UserQuestion> findByUserId(String userId);
+
+//    // 查找用户关注问题数
+//    int countByUserId(String userId);
 }

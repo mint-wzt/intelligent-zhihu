@@ -17,4 +17,7 @@ public interface UserTopicRepository extends JpaRepository<UserTopic, String> {
     // 查找关注话题记录
     List<UserTopic> findByUserId(String userId);
 
+//    // 查找关注的话题数
+//    int countByUserId(String userId);
+
 }

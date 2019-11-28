@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Service
@@ -29,4 +30,14 @@ public class SysTopicService {
         GlobalResponse response = new GlobalResponse(200,"添加话题成功");
         return response;
     }
+
+    @Action(type = "READ",operation = "获取所有话题")
+    public GlobalResponse getAllTopics(){
+        List<Topic> topics = topicRepository.findAll();
+        GlobalResponse response = new GlobalResponse(200,"操作成功");
+        response.getData().put("topics",topics);
+        return response;
+    }
+
+
 }

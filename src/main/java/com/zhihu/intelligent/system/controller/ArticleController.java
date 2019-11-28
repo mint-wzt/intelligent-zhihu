@@ -4,11 +4,13 @@ import com.zhihu.intelligent.system.entity.Article;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.service.ArticleService;
 import com.zhihu.intelligent.system.service.CommentService;
+import com.zhihu.intelligent.system.service.ImageService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -20,6 +22,17 @@ public class ArticleController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private ImageService imageService;
+
+    @ApiOperation(value = "上传图片", notes = "上传图片")
+    @PostMapping("/image/images")
+    @PreAuthorize("hasRole('CREATE')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public GlobalResponse uploadIamge(@RequestParam("id") String id, @RequestParam("files") MultipartFile[] files) {
+        return imageService.save(files, id);
+    }
 
     @ApiOperation(value = "发布文章", notes = "发布文章")
     @PostMapping("/articles")

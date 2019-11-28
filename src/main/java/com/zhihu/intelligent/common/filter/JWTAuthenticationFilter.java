@@ -81,7 +81,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json; charset=utf-8");
         //创建Token
         String token = JwtTokenUtils.createToken(jwtUser,roles,rememberMe.get());
-        GlobalResponse globalResponse = UserUtil.globalResponse(200,"认证成功",jwtUser.getUser());
+        GlobalResponse globalResponse = new GlobalResponse(200,"认证成功");
+        globalResponse.getData().put("userInfo",jwtUser.getUser());
         globalResponse.getData().put("token",token);
         PrintWriter out = response.getWriter();
         out.append(globalResponse.toString());

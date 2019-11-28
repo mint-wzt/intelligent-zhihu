@@ -2,9 +2,11 @@ package com.zhihu.intelligent.system.service;
 
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.Topic;
+import com.zhihu.intelligent.system.entity.User;
 import com.zhihu.intelligent.system.entity.UserTopic;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.TopicRepository;
+import com.zhihu.intelligent.system.repository.UserRepository;
 import com.zhihu.intelligent.system.repository.UserTopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class UserTopicService {
     @Autowired
     private TopicRepository topicRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Action(type = "JUDGE", operation = "判断用户是否关注话题")
     public GlobalResponse hasMe(String topicId, String userId) {
         UserTopic topic = userTopicRepository.findByTopicIdAndUserId(topicId, userId);
@@ -38,7 +43,7 @@ public class UserTopicService {
     }
 
     @Action(type = "CREATE", operation = "关注话题")
-    public GlobalResponse followTopic(String topicId,String name, String userId) {
+    public GlobalResponse followTopic(String topicId, String name, String userId) {
         // 保存话题关注记录
         UserTopic userTopic = new UserTopic();
         userTopic.setTopicId(topicId);
@@ -52,6 +57,10 @@ public class UserTopicService {
         topic.setFollowNums(topic.getFollowNums() + 1);
         topicRepository.save(topic);
 
+        // 用户关注话题+1
+        User user = userRepository.findById(userId).get();
+        user.setTopics(user.getTopics() + 1);
+        userRepository.save(user);
         // 响应
         GlobalResponse response = new GlobalResponse(200, "关注成功");
         response.getData().put("topicInfo", topic);
@@ -68,6 +77,11 @@ public class UserTopicService {
         Topic topic = topicRepository.findById(topicId).get();
         topic.setFollowNums(topic.getFollowNums() - 1);
         topicRepository.save(topic);
+
+        // 用户关注话题-1
+        User user = userRepository.findById(userId).get();
+        user.setTopics(user.getTopics() - 1);
+        userRepository.save(user);
 
         GlobalResponse response = new GlobalResponse(200, "取消关注成功");
         return response;

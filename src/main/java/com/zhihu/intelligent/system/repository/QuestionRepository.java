@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, String> {
 
+//    // 查找用户关注的话题数
+//    int countByUserId(String userId);
 }
