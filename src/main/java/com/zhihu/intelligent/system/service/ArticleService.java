@@ -2,10 +2,12 @@ package com.zhihu.intelligent.system.service;
 
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.Article;
+import com.zhihu.intelligent.system.entity.Question;
 import com.zhihu.intelligent.system.entity.UserArticle;
 import com.zhihu.intelligent.system.exception.DeleteFailedException;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.ArticleRepository;
+import com.zhihu.intelligent.system.repository.QuestionRepository;
 import com.zhihu.intelligent.system.repository.UserArticleRepository;
 import com.zhihu.intelligent.system.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class ArticleService {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @Action(type = "CREATE", operation = "发布文章")
     public GlobalResponse save(String authorId, String author, String questionId,
@@ -62,16 +67,23 @@ public class ArticleService {
         return response;
     }
 
-    @Action(type = "READ",operation = "查看文章")
-    public GlobalResponse getArticle(String articleId){
+    @Action(type = "READ", operation = "查看文章")
+    public GlobalResponse getArticle(String articleId) {
         Article article = articleRepository.findById(articleId).get();
 
         // 浏览量+1
-        article.setBrowsedNums(article.getBrowsedNums()+1);
+        article.setBrowsedNums(article.getBrowsedNums() + 1);
         articleRepository.save(article);
 
-        GlobalResponse response = new GlobalResponse(200,"获取文章信息成功");
-        response.getData().put("articleInfo",article);
+        // 热度+1
+        if (article.getQuestionId() == "") {
+            Question question = questionRepository.findById(article.getQuestionId()).get();
+            question.setHotNums(question.getHotNums() + 1);
+            questionRepository.save(question);
+        }
+
+        GlobalResponse response = new GlobalResponse(200, "获取文章信息成功");
+        response.getData().put("articleInfo", article);
         return response;
     }
 

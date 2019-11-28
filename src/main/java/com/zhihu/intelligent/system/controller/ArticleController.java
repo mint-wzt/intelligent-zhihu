@@ -48,7 +48,6 @@ public class ArticleController {
     }
     @ApiOperation(value = "获取文章", notes = "获取文章")
     @GetMapping("/articles")
-    @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
     @ResponseStatus(HttpStatus.OK)
     public GlobalResponse getArticle(@RequestParam("articleId") String articleId){
         return articleService.getArticle(articleId);

@@ -29,8 +29,9 @@ public class UserTopicController {
     @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
     @ResponseStatus(HttpStatus.CREATED)
     public GlobalResponse followTopic(@RequestParam("topic_id") String topicId,
+                                      @RequestParam("name") String name,
                                       @RequestParam("user_id") String userId) {
-        return userTopicService.followTopic(topicId, userId);
+        return userTopicService.followTopic(topicId, name, userId);
     }
 
     @ApiOperation(value = "取消关注话题", notes = "取消关注话题")

@@ -36,6 +36,9 @@ public class Question {
     @Column(name = "follow_nums")
     private int followNums;
 
+    @Column(name = "hot_nums")
+    private int hotNums;
+
     @Column(name = "modified_at")
     private Date modifiedAt;
 

@@ -76,8 +76,11 @@ public class UserUtil {
     public static String getUserId(){
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String authorization = request.getHeader(SecurityConstants.TOKEN_HEADER);
-        String token = authorization.replace(SecurityConstants.TOKEN_PREFIX,"");
-        return JwtTokenUtils.getTokenBody(token).getId();
+        if (authorization != null){
+            String token = authorization.replace(SecurityConstants.TOKEN_PREFIX,"");
+            return JwtTokenUtils.getTokenBody(token).getId();
+        }
+        return null;
     }
 
 

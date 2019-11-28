@@ -38,10 +38,11 @@ public class UserTopicService {
     }
 
     @Action(type = "CREATE", operation = "关注话题")
-    public GlobalResponse followTopic(String topicId, String userId) {
+    public GlobalResponse followTopic(String topicId,String name, String userId) {
         // 保存话题关注记录
         UserTopic userTopic = new UserTopic();
         userTopic.setTopicId(topicId);
+        userTopic.setName(name);
         userTopic.setUserId(userId);
         userTopic.setCreateAt(new Date());
         userTopicRepository.save(userTopic);

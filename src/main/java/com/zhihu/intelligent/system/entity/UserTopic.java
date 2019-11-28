@@ -22,6 +22,9 @@ public class UserTopic {
     @Column(name = "topic_id")
     private String topicId;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "user_id")
     private String userId;
 
