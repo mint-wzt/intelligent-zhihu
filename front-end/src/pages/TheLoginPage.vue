@@ -35,8 +35,11 @@
 <script>
     import TheHomeNav from '@/components/TheHomeNav.vue'
     import {
-        USER_SET_USER_INFO,
+        USER_SET_USER_ID,
         USER_SET_USER_TOKEN,
+        USER_SET_USER_AVATAR,
+        USER_SET_USER_ROLE,
+        USER_SET_USER_USERNAME,
     } from '@/store/mutations-type'
 
     export default {
@@ -62,34 +65,27 @@
                     },
                 ).then(resp => {
                     if (resp.status === 200) {
-                        console.log(resp);
                         if (resp.data.code !== 200) {
 
                         } else {
-                            this.$store.commit("user/" + USER_SET_USER_TOKEN, resp.data.data);
-                            this.$store.commit("user/" + USER_SET_USER_INFO, {
-                                ...resp.data.data,
-                                user_id: resp.data.data.id,
-                                avatar_url: resp.data.data.avtar_url
+                            const data = resp.data.data.userInfo;
+                            this.$store.commit("user/" + USER_SET_USER_TOKEN, {
+                                token: resp.data.data.token
                             });
-                            this.$localStorage.set('userInfo', {
-                                user_id: resp.data.data.id,
-                                avatar_url: resp.data.data.avtar_url,
-                                username: resp.data.data.username,
-                                nickname: resp.data.data.nickname,
-                                description: resp.data.data.description ? resp.data.data.description : "",
-                                career: resp.data.data.career ? resp.data.data.career : "",
-                                education: resp.data.data.education,
-                                name: resp.data.data.name ? resp.data.data.name : "",
-                                gender: resp.data.data.gender ? resp.data.data.gender : "",
-                                birthday: resp.data.data.birthday ? resp.data.data.birthday : "",
-                                phone: resp.data.data.phone ? resp.data.data.phone : "",
-                                email: resp.data.data.email,
-                                qq: resp.data.data.qq ? resp.data.data.qq : "",
-                                role: resp.data.data.role,
-                                token: resp.data.data.token,
-                            })
-                            this.$router.push({name:'myarticle'})
+                            this.$store.commit("user/" + USER_SET_USER_ROLE, {role: data.roles});
+                            this.$store.commit("user/" + USER_SET_USER_USERNAME, {
+                                username: data.username
+                            });
+                            this.$store.commit("user/" + USER_SET_USER_ID, {
+                                user_id: data.id
+                            });
+                            this.$store.commit("user/" + USER_SET_USER_AVATAR, {
+                                avatar_url: data.avatarUrl,
+                            });
+
+                            this.$localStorage.set('state', JSON.stringify(this.$store.state));
+
+                            this.$router.push({name:'recommend'})
                         }
                     }
                 }).catch(function (error) {

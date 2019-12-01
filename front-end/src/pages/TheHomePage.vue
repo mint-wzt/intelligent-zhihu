@@ -41,6 +41,7 @@
 </template>
 
 <script>
+
     import TheHomeNav from '@/components/TheHomeNav.vue'
     export default {
         name: "TheHomePage",

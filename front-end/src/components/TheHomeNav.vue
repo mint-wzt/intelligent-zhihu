@@ -66,11 +66,6 @@
 
 <script>
     import {mapGetters, mapState} from 'vuex'
-    import {
-        USER_SET_USER_INFO,
-        USER_SET_USER_TOKEN,
-        USER_CLEAR_ALL,
-    } from '@/store/mutations-type'
 
     export default {
         name: "TheHomeNav",
@@ -91,17 +86,10 @@
         },
         methods: {
             loginout() {
-                this.$localStorage.set('userInfo', null);
-                this.$store.commit("user/"+USER_CLEAR_ALL);
+                this.$localStorage.set('state', null);
+                this.$router.push({name:'login'})
             }
         },
-        created() {
-            const userinfo = this.$localStorage.get('userInfo', null);
-            if (userinfo) {
-                this.$store.commit("user/"+USER_SET_USER_TOKEN, userinfo);
-                this.$store.commit("user/"+USER_SET_USER_INFO, userinfo);
-            }
-        }
     }
 </script>
 

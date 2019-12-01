@@ -16,33 +16,77 @@ import axios from 'axios'
 import store from './store'
 import VueLocalStorage from "vue-localstorage";
 import 'vue-croppa/dist/vue-croppa.css'
+import Croppa from "vue-croppa";
+import VueDataTables from 'vue-data-tables'
 
-import Croppa  from "vue-croppa";
+import {
+    USER_SET_USER_ID,
+    USER_SET_USER_TOKEN,
+    USER_SET_USER_AVATAR,
+    USER_SET_USER_ROLE,
+    USER_SET_USER_USERNAME,
+} from '@/store/mutations-type'
 
 Vue.config.productionTip = false;
 
 Vue.use(ElementUI);
+Vue.use(VueDataTables);
 Vue.use(vueMaterial);
 Vue.use(VueRouter);
 Vue.use(VueInstant);
 Vue.use(mavonEditor);
 Vue.use(VueLocalStorage);
-Vue.use(Croppa );
+Vue.use(Croppa);
 
-const axios_instance = axios.create({
-  baseURL: 'http://localhost:8081',
-  timeout: 1000,
+const service = axios.create({
+    baseURL: 'http://localhost:8081',
+    timeout: 3000,
 });
 
-Vue.prototype.$http = axios_instance;
+service.interceptors.request.use(
+    config => {
+        if (store.state.user.token !== undefined) {
+            config.headers['Authorization'] = store.state.user.token
+        }
+        return config
+    },
+    error => {
+        console.log(error);
+        return Promise.reject(error)
+    }
+);
+
+service.interceptors.response.use(
+    resp => {
+        console.log(resp);
+        return resp;
+    },
+    error => {
+        console.log(error);
+        return error
+    }
+);
+
+Vue.prototype.$http = service;
 
 new Vue({
-  localStorage: {
-    userInfo: {
-      type: Object,
+    localStorage: {
+        userInfo: {
+            type: Object,
+        }
+    },
+    router: new VueRouter({routes: Routes}),
+    store,
+    render: h => h(App),
+    created() {
+        const state = this.$localStorage.get('state', null);
+        if (state !== null) {
+            const {user} = JSON.parse(state);
+            this.$store.commit('user/' + USER_SET_USER_ID, user);
+            this.$store.commit('user/' + USER_SET_USER_TOKEN, user);
+            this.$store.commit('user/' + USER_SET_USER_AVATAR, user);
+            this.$store.commit('user/' + USER_SET_USER_ROLE, user);
+            this.$store.commit('user/' + USER_SET_USER_USERNAME, user);
+        }
     }
-  },
-  router: new VueRouter({routes: Routes}),
-  store,
-  render: h => h(App),
 }).$mount('#app');

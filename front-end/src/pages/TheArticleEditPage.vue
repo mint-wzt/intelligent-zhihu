@@ -20,7 +20,13 @@
         <div class="md-layout md-alignment-center-center">
             <div class="md-layout-item md-size-90">
                 <md-field>
-                    <mavon-editor :toolbars="markdownOptions" v-model="content" class="mavonEditor"/>
+                    <mavon-editor
+                            ref="markdownEditor"
+                            :toolbars="markdownOptions"
+                            v-model="content"
+                            @imgAdd="imageAdd"
+                            @imgDel="imageDelete"
+                            class="mavonEditor"/>
                 </md-field>
             </div>
         </div>
@@ -32,7 +38,6 @@
     import TheHomeNav from '@/components/TheHomeNav.vue'
     import {mapState} from 'vuex'
     import qs from 'querystring'
-
     export default {
         name: "TheArticleEditPage",
         components: {
@@ -45,53 +50,89 @@
                 token: state => state.token,
 
             }),
-            articleType () {
+            articleType() {
                 return this.types.join(",")
             }
         },
         methods: {
-          publishArticle() {
-              this.$http.post(
-                  "/api/article/articles",
-                  qs.stringify(
-                      {
-                          authorId: this.authorId,
-                          type: this.articleType,
-                          author: this.author,
-                          content: this.content,
-                          status: 1,
-                          isArticle: 1,
-                          title: this.title,
-                      }
-                  ),
-                  {
-                      headers: {
-                          "Authorization": this.token,
-                          'content-type': 'application/x-www-form-urlencoded'
-                      }
-                  }
-              ).then(resp => {
-                    if (resp.status === 200) {
-                        if (resp.data.code === 200) {
-                            this.$router.push({
-                                name:"article_detail",
-                                params: {
-                                    articleInfo: resp.data.data.articleInfo
-                                }
-                            })
+            imageAdd(pos, file) {
+                this.imageFiles[pos] = file;
+            },
+            imageDelete(pos) {
+                delete this.imageFiles[pos];
+            },
+
+            uploadImage(callback) {
+                var fd = new FormData();
+                for (var img_ in this.imageFiles) {
+                    fd.append('files', this.imageFiles[img_]);
+                }
+                fd.append('id', this.authorId);
+                this.$http.post('/article/image/images',
+                    fd, {
+                        headers: {
+                            "Authorization": this.token,
+                            'Content-Type': 'multipart/form-data'
                         }
                     }
-              }).catch(err => {
-                  console.log(err)
-              })
+                ).then(resp => {
+                    console.log(resp);
+                    if (resp.status === 201) {
+                        const {imageUrls} = resp.data.data;
+                        for (var index = 0; index < imageUrls.length; index++) {
+                            this.$refs.markdownEditor.$img2Url(index + 1, imageUrls[index]);
+                        }
 
-          }
+                        callback()
+                    }
+                })
+            },
+
+            publishArticle() {
+
+                this.uploadImage(()=> {
+                    this.$http.post(
+                        "/article/articles",
+                        qs.stringify(
+                            {
+                                authorId: this.authorId,
+                                type: this.articleType,
+                                author: this.author,
+                                content: this.content,
+                                status: 1,
+                                isArticle: 1,
+                                title: this.title,
+                            }
+                        ),
+                        {
+                            headers: {
+                                "Authorization": this.token,
+                                'content-type': 'application/x-www-form-urlencoded'
+                            }
+                        }
+                    ).then(resp => {
+                        if (resp.status === 200) {
+                            if (resp.data.code === 200) {
+                                this.$router.push({
+                                    name: "article_detail",
+                                    params: {
+                                        id: resp.data.data.articleInfo.id,
+                                    }
+                                })
+                            }
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    })
+                });
+            }
         },
-        data () {
+        data() {
             return {
                 content: "",
                 title: "",
                 types: [],
+                imageFiles: {},
 
                 markdownOptions: {
                     bold: true, // 粗体
@@ -135,12 +176,13 @@
 </script>
 
 <style scoped>
-.margin-top {
-    margin-top: 2rem;
-}
-.mavonEditor {
-    width: 100%;
-    height: 100%;
-    min-height: 45rem;
-}
+    .margin-top {
+        margin-top: 2rem;
+    }
+
+    .mavonEditor {
+        width: 100%;
+        height: 100%;
+        min-height: 45rem;
+    }
 </style>

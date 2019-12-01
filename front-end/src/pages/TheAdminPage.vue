@@ -50,6 +50,9 @@
                         <el-menu-item index="/user">
                             <span >用户管理</span>
                         </el-menu-item>
+                        <el-menu-item index="/topic">
+                            <span >话题管理</span>
+                        </el-menu-item>
                     </el-menu>
                 </el-aside>
                 <el-main>
@@ -62,11 +65,9 @@
 
 <script>
     import {mapGetters, mapState} from 'vuex'
-    import {
-        USER_SET_USER_INFO,
-        USER_SET_USER_TOKEN,
-        USER_CLEAR_ALL
-    } from '@/store/mutations-type'
+    // import {
+    //     USER_SET_USER_TOKEN,
+    // } from '@/store/mutations-type'
     export default {
         name: "TheAdminPage",
         computed: {
@@ -75,17 +76,9 @@
                 avatar: state => state.avatar_url,
             })
         },
-        created() {
-            const userinfo = this.$localStorage.get('userInfo', null);
-            if (userinfo) {
-                this.$store.commit("user/"+USER_SET_USER_TOKEN, userinfo);
-                this.$store.commit("user/"+USER_SET_USER_INFO, userinfo);
-            }
-        },
         methods: {
             loginout() {
-                this.$localStorage.set('userInfo', null);
-                this.$store.commit("user/"+USER_CLEAR_ALL);
+                this.$localStorage.set('state', null);
             }
         }
     }

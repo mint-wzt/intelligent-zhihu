@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="items.length === 0">没有数据???</div>
-        <md-card v-for="item in items" :key="item.id" class="card-margin">
+        <md-card v-for="item in items" :key="item.title" class="card-margin">
             <md-card-header>
                 <md-card-header-text>
                     <div class="md-title">{{item.title}}</div>
@@ -13,7 +13,7 @@
                     :to="{
                         name:'article_detail',
                         params: {
-                            id : item.id,
+                            id : item.authorId,
                             title: item.title,
                             content: item.content,
                             author: item.author
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+    import api from '@/api'
     import {mapState} from 'vuex'
     export default {
         name: "TheRecommend",
@@ -49,19 +50,8 @@
         },
         methods: {
             getRecommendArticle() {
-                this.$http.get('/article/articles/recommend',
-                    {
-                        params: {
-                            userId: this.user_id
-                        },
-                        headers: {
-                            "Authorization": this.token,
-                        }
-                    }
-                ).then(resp => {
-                    if (resp.status === 200) {
-                        this.items.push(resp.data.data.articleList);
-                    }
+                api.article.getRecommendArticle(this.$http, this.user_id, resp=> {
+                    this.items.concat(resp.data.data.articleList);
                 })
             }
         },

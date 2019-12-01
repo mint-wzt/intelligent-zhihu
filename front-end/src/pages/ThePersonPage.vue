@@ -20,18 +20,21 @@
         <div class="md-layout md-alignment-top-center" style="margin-top: 2rem;">
             <div class="md-layout-item md-size-90">
                 <md-card>
+                    <md-card-media-cover>
+                        <img src="@/assets/examples/wutengchunzi.png" alt="" />
+                    </md-card-media-cover>
                     <md-card-header>
                         <div class="md-layout">
                             <div class="md-layout-item md-size-20">
                                 <el-avatar
+                                        class="avatar_img"
                                     :src="avatar"
                                     shape="square"
-                                    :size="168"
                                 >
                                 </el-avatar>
                             </div>
 
-                            <div class="md-layout-item md-size-20">
+                            <div class="md-layout-item md-size-80">
 
                                 <div class="md-layout md-alignment-top-center">
                                     <div class="md-layout-item ">
@@ -51,13 +54,9 @@
                                     </div>
                                 </div>
 
-                                <div class="md-layout md-alignment-center-center">
-                                    <div class="md-layout-item ">
-                                        <div class="md-title">教育水平</div>
-                                    </div>
-                                    <div class="md-layout-item">
-                                        <div class="md-body-2">{{education}}</div>
-                                    </div>
+                                <div class="md-layout md-alignment-center-left">
+                                    <div class="md-title">教育水平</div>
+                                    <div class="md-body-2" style="margin-left: .5rem;">{{education}}</div>
                                 </div>
                             </div>
 
@@ -140,12 +139,19 @@
                 }, 'image/jpeg')
             }
         },
-        mounted() {
-            this.$router.push({name:'myarticle'})
-        }
     }
 </script>
 
 <style scoped>
-
+.avatar_img {
+    width: 8rem;
+    height: 8rem;
+    position: relative;
+    margin-top: -50px;
+    margin-left: 25px;
+    z-index: 9999;
+    background-color: #fff;
+    border: 4px solid #fff;
+    border-radius: 8px;
+}
 </style>

@@ -52,6 +52,11 @@ const routes = [
                 path: "/user",
                 name: "manage_user",
                 component: () => import('@/components/TheUserManage.vue')
+            },
+            {
+                path: "/topic",
+                name: "manage_topic",
+                component: () => import('@/components/TheAdminTopics.vue')
             }
         ]
     }, {
@@ -66,6 +71,10 @@ const routes = [
         path: '/userinfo',
         name: 'userinfo_edit',
         component: () => import('@/pages/ThePersonInfoEditPage.vue')
+    }, {
+        path: '/topic',
+        name: 'topics',
+        component: () => import('@/pages/TheTopicPage.vue')
     }
 ];
 

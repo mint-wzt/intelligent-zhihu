@@ -60,3 +60,10 @@ https://www.materialpalette.com/icons
 [vue-croppa]
 
 https://github.com/zhanziyang/vue-croppa
+
+[vue-data-tables]
+
+https://github.com/njleonzhang/vue-data-tables
+
+https://www.njleonzhang.com/vue-data-tables/#/zh-cn/
+
