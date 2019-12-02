@@ -15,6 +15,8 @@ public interface ArticleRepository extends JpaRepository<Article, String> {
 
     List<Article> findByOrderByBrowsedNumsDesc();
 
+    List<Article> findByAuthorIdOrderByCreateDateDesc(String authorId);
+
     //通过用户名查找文章
     List<Article> findArticlesByAuthor(String author);
 

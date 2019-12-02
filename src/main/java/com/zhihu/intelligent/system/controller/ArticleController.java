@@ -59,6 +59,7 @@ public class ArticleController {
                                       @RequestParam("content") String content) {
         return articleService.update(articleId, userId, status, title, content);
     }
+
     @ApiOperation(value = "获取文章", notes = "获取文章")
     @GetMapping("/articles")
     @ResponseStatus(HttpStatus.OK)
@@ -101,6 +102,21 @@ public class ArticleController {
                                   @RequestParam("content") String content,
                                   @RequestParam(value = "commentPid", defaultValue = "") String commentPid) {
         return commentService.save(articleId, userId, content, commentPid);
+    }
+
+
+    @ApiOperation(value = "获取用户所有文章", notes = "获取用户所有文章")
+    @GetMapping("/user/articles")
+    @ResponseStatus(HttpStatus.OK)
+    public GlobalResponse getAllArticles(@RequestParam("userId") String userId){
+        return articleService.getAllArticles(userId);
+    }
+
+    @ApiOperation(value = "获取文章所有评论", notes = "获取文章所有评论")
+    @GetMapping("/article/comment")
+    @ResponseStatus(HttpStatus.OK)
+    public GlobalResponse getAllComments(@RequestParam("articleId") String articleId){
+        return articleService.getAllComments(articleId);
     }
 
 

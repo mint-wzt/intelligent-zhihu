@@ -1,10 +1,7 @@
 package com.zhihu.intelligent.system.service;
 
 import com.zhihu.intelligent.system.aop.Action;
-import com.zhihu.intelligent.system.entity.Article;
-import com.zhihu.intelligent.system.entity.Question;
-import com.zhihu.intelligent.system.entity.User;
-import com.zhihu.intelligent.system.entity.UserArticle;
+import com.zhihu.intelligent.system.entity.*;
 import com.zhihu.intelligent.system.exception.DeleteFailedException;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.*;
@@ -13,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ArticleService {
@@ -164,5 +162,32 @@ public class ArticleService {
         GlobalResponse response = new GlobalResponse(200, "点赞成功");
         return response;
     }
+
+    @Action(type = "READ", operation = "查看所有文章")
+    public GlobalResponse getAllArticles(String userId) {
+
+        // 获取所有文章
+        List<Article> articles = articleRepository.findByAuthorIdOrderByCreateDateDesc(userId);
+
+        GlobalResponse response = new GlobalResponse(200, "获取所有文章成功");
+        response.getData().put("articles", articles);
+        return response;
+    }
+
+    @Action(type = "READ", operation = "获取文章所有评论")
+    public GlobalResponse getAllComments(String articleId) {
+
+        // 获取文章所有评论
+        List<Comment> comments = commentRepository.findByArticleId(articleId);
+        comments.forEach(comment -> {
+            User user = userRepository.findById(comment.getUserId()).get();
+            comment.setNickName(user.getNickName());
+        });
+
+        GlobalResponse response = new GlobalResponse(200, "获取文章所有评论成功");
+        response.getData().put("comments", comments);
+        return response;
+    }
+
 
 }
