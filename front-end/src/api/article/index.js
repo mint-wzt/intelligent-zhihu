@@ -27,7 +27,20 @@ const articleAPI = {
         }).then(resp => {
             callback(resp)
         })
-    }
+    },
+    theThumbsHasMe(http, params, callback) {
+        http.post('/article/thumbs/hasme', params)
+            .then(resp => {callback(resp);})
+    },
+    thumbIt(http, params, callback) {
+        http.post('/article/thumbs', params)
+            .then(resp => {callback(resp);})
+    },
+    getArticleById(http, params, callback) {
+        http.get('/article/articles', params)
+            .then(resp => {callback(resp);})
+    },
+
 };
 
 export default articleAPI;

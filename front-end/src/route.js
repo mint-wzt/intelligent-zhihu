@@ -75,6 +75,10 @@ const routes = [
         path: '/topic',
         name: 'topics',
         component: () => import('@/pages/TheTopicPage.vue')
+    }, {
+        path: '/question/edit',
+        name: 'question_edit',
+        component: () => import('@/pages/TheQuestionEditPage.vue')
     }
 ];
 

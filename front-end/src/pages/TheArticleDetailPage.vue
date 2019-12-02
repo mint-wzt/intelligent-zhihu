@@ -1,18 +1,18 @@
 <template>
     <div>
         <the-home-nav/>
-        <div class="md-layout md-alignment-top-center">
-            <div class="md-layout-item md-size-75">
-                <div class="md-layout">
-                    <div class="md-layout-item">
+        <el-row >
+            <el-col :span="18" :offset="3" >
+                <el-row >
+                    <el-col >
                         <h1>{{title}}</h1>
-                    </div>
-                </div>
-                <div class="md-layout">
-                    <div class="md-layout-item">
-                        <h3>{{author}}</h3>
-                    </div>
-                </div>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col>
+                        <h3>作者：<span>{{author}}</span></h3>
+                    </el-col>
+                </el-row>
 
                 <mavon-editor
                         defaultOpen="preview"
@@ -22,15 +22,30 @@
                         v-model="content"
                         :subfield="false"
                         :toolbars="{}"
-                ></mavon-editor>
-            </div>
-        </div>
+                />
+
+                <el-row class="bottomToolbar">
+                    <el-col>
+                        <el-button ref="article_thumb_button" type="primary" @click="thumbIt" :disabled="thumbBtn" icon="el-icon-thumb" round><span style="color: deepskyblue; margin-right: .25rem;">{{thumbs}}</span>{{thumbText}}</el-button>
+                        <el-button type="success" round>添加评论</el-button>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col>
+
+                    </el-col>
+                </el-row>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
 <script>
     import TheHomeNav from '@/components/TheHomeNav.vue'
     import {mapState} from 'vuex'
+    import api from "@/api";
+    import qs from 'querystring'
 
     export default {
         name: "TheArticleDetailPage",
@@ -48,6 +63,9 @@
                 content: '',
                 author: '',
                 author_id: null,
+                thumbs: 0,
+                thumbText: '点赞',
+                thumbBtn: false,
             }
         },
         computed: {
@@ -57,6 +75,21 @@
             })
         },
         methods: {
+            thumbIt() {
+                api.article.thumbIt(
+                    this.$http,
+                    qs.stringify({
+                        userId: this.user_id,
+                        articleId: this.id,
+                    }),
+                    resp => {
+                        if (resp.status === 200) {
+                            this.thumbs += 1;
+                            this.thumbText = '已赞'
+                        }
+                    }
+                )
+            },
             getUserInfo(callback) {
                 this.$http.get('/user/users/'+this.user_id,
                     {
@@ -69,44 +102,58 @@
                         callback(resp)
                     }
                 })
+            },
+            getArticleById() {
+                api.article.getArticleById(
+                    this.$http,
+                    {
+                        params: {
+                            articleId: this.id,
+                        }
+                    },
+                    resp => {
+                        if (resp.status === 200) {
+                            const {
+                                title,
+                                content,
+                                author,
+                                author_id,
+                                thumbs
+                            } = resp.data.data.articleInfo;
+                            this.title = title;
+                            this.content = content;
+                            this.author = author;
+                            this.author_id = author_id;
+                            this.thumbs = thumbs;
+                        }
+                    }
+                );
+                api.article.theThumbsHasMe(
+                    this.$http,
+                    qs.stringify({
+                        userId: this.user_id,
+                        articleId: this.id,
+                    }),
+                    resp => {
+                        const data = resp.data.data;
+                        if (data.hasme) {
+                            this.thumbText = '已赞';
+                            this.thumbBtn = true;
+                        }
+                    }
+                );
             }
         },
         mounted() {
-
-            this.$http.get('/article/articles',
-                {
-                    params: {
-                        articleId: this.id,
-                    },
-                    headers: {
-                        "Authorization": this.token,
-                    }
-                }
-            ).then(resp => {
-                console.log(resp);
-                if (resp.status === 200) {
-                    const {
-                        title,
-                        content,
-                        author,
-                        author_id,
-                    } = resp.data.data.articleInfo;
-                    this.title = title;
-                    this.content = content;
-                    this.author = author;
-                    this.author_id = author_id;
-
-                    this.getUserInfo((resp) => {
-                        console.log(resp)
-                    })
-                }
-            });
-            console.log(this.articleInfo)
+            this.getArticleById();
         }
 
     }
 </script>
 
 <style scoped>
-
+.bottomToolbar {
+    margin-top: 1rem;
+    margin-bottom: 10rem;
+}
 </style>

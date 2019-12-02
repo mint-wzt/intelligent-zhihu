@@ -1,8 +1,11 @@
-import articleAPI from "./article";
-import adminAPI from  './admin'
+import article from "./article";
+import admin from  './admin'
+import question from './question'
+
 const api = {
-    article: articleAPI,
-    admin: adminAPI,
+    article,
+    admin ,
+    question,
 };
 
 export default api;
