@@ -5,7 +5,7 @@
                 <div class="md-toolbar-section-start">
                     <h3 class="md-title">你问我答</h3>
                     <md-button :to="{name:'recommend'}">首页</md-button>
-<!--                    <md-button to="#">发现</md-button>-->
+                    <md-button :to="{name:'questions_list'}">发现</md-button>
 <!--                    <md-button to="#">等你来答</md-button>-->
                 </div>
                 <vue-instant v-model="searchBoxValue"
@@ -14,6 +14,8 @@
                              :show-autocomplete="true"
                              :suggestion-attribute="suggestion_attribute"
                              type="twitter"
+                             @click-button="search"
+                             @enter="search"
                 />
                 <div class="md-toolbar-section-end">
 <!--                    <md-button>-->
@@ -66,38 +68,84 @@
 
 <script>
     import {mapGetters, mapState} from 'vuex'
-
+    import api from '@/api'
+    // import qs from 'querystring'
     export default {
         name: "TheHomeNav",
+        props: {
+            isSearchResultPage: {
+                type: Boolean,
+                default: false,
+            }
+        },
         computed: {
-            ...mapGetters('user',['isLogin', 'isAdmin']),
+            ...mapGetters('user', ['isLogin', 'isAdmin']),
             ...mapState('user', {
                 avatar: state => state.avatar_url,
             })
         },
-        data () {
+        data() {
             return {
                 searchBoxValue: '',
-                suggestions: [
-                ],
+                suggestions: [],
                 suggestion_attribute: 'title',
                 placeholder: '搜点什么',
             }
         },
         methods: {
+            search() {
+                api.article.seach(this.$http,
+                    {
+                        keyWord: this.searchBoxValue,
+                    },
+                    resp => {
+                        if (resp.status === 200) {
+                            const data = resp.data.data;
+                            if (typeof data.articles !== "undefined" && data.articles.length !== 0) {
+                                if (this.isSearchResultPage) {
+                                    this.$router.push('/')
+                                }
+                                this.$router.push({
+                                    name: 'search_result',
+                                    params: {
+                                        results: data.articles,
+                                    }
+                                })
+                            } else {
+                                if (this.isSearchResultPage) {
+                                    this.$router.push('/')
+                                }
+                                this.$router.push({
+                                    name: 'search_result',
+                                    params: {
+                                        results: [],
+                                    }
+                                })
+                            }
+                        }
+
+                    }
+                )
+            },
+
             loginout() {
                 this.$localStorage.set('state', null);
-                this.$router.push({name:'login'})
+                this.$router.push({name: 'login'})
             }
         },
     }
 </script>
 
 <style scoped>
-.md-menu {
-    margin-right: 2rem;
-}
-    .md-menu-content  {
+    .md-menu {
+        margin-right: 2rem;
+    }
+
+    .md-menu-content {
         z-index: 2000;
+    }
+
+    .vue-instant__suggestions {
+        min-width: 200px;
     }
 </style>

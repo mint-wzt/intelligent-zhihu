@@ -1,10 +1,10 @@
 <template>
     <div>
         <the-home-nav/>
-        <el-row >
-            <el-col :span="18" :offset="3" >
-                <el-row >
-                    <el-col >
+        <el-row>
+            <el-col :span="18" :offset="3">
+                <el-row>
+                    <el-col>
                         <h1>{{title}}</h1>
                     </el-col>
                 </el-row>
@@ -26,14 +26,55 @@
 
                 <el-row class="bottomToolbar">
                     <el-col>
-                        <el-button ref="article_thumb_button" type="primary" @click="thumbIt" :disabled="thumbBtn" icon="el-icon-thumb" round><span style="color: deepskyblue; margin-right: .25rem;">{{thumbs}}</span>{{thumbText}}</el-button>
-                        <el-button type="success" round>添加评论</el-button>
+                        <el-button ref="article_thumb_button" type="primary" @click="thumbIt" :disabled="thumbBtn"
+                                   icon="el-icon-thumb" round><span style="color: deepskyblue; margin-right: .25rem;">{{thumbs}}</span>{{thumbText}}
+                        </el-button>
+                        <el-button type="success" round @click="showCommentDialog = true">添加评论</el-button>
+                        <el-button type="warning" round :icon="this.hasFavoriteIt_.icon" @click="handleFavoriteArticle">
+                            {{this.hasFavoriteIt_.text}}
+                        </el-button>
+
                     </el-col>
                 </el-row>
 
+                <el-dialog :visible.sync="showCommentDialog">
+                    <el-form>
+                        <el-form-item>
+                            <label>评论内容</label>
+                            <el-input type="textarea" v-model="commentForm.content"/>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button @click="addComment">发布</el-button>
+                            <el-button @click="showCommentDialog = false">取消</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-dialog>
+
                 <el-row>
                     <el-col>
-
+                        <el-card v-if="comments.length !== 0">
+                            <el-row type="flex" justify="center">
+                                <el-col :span="5">
+                                    <div style="font-size: 16px;">评论({{comments.length}}条)</div>
+                                </el-col>
+                            </el-row>
+                            <div v-for="comment in comments" :key="comment.nickname">
+                                <el-row type="flex" justify="space-between">
+                                    <el-col :span="18">
+                                        <div class="commentNickname">{{comment.nickName}}</div>
+                                    </el-col>
+                                    <el-col :span="6">
+                                        <div style="font-size: 12px;">{{dataFormat(comment.createDate)}}</div>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <div class="commentContent">{{comment.content}}</div>
+                                    </el-col>
+                                </el-row>
+                                <el-divider/>
+                            </div>
+                        </el-card>
                     </el-col>
                 </el-row>
             </el-col>
@@ -66,15 +107,130 @@
                 thumbs: 0,
                 thumbText: '点赞',
                 thumbBtn: false,
+                showCommentDialog: false,
+                comments: [],
+                commentForm: {
+                    content: '',
+                },
+                hasFavoriteIt_: {
+                    has: false,
+                    icon: '',
+                    text: '',
+                },
             }
         },
         computed: {
             ...mapState('user', {
                 user_id: state => state.user_id,
                 token: state => state.token,
-            })
+            }),
+
         },
         methods: {
+            handleFavoriteArticle() {
+                if (this.hasFavoriteIt_.has) {
+                    api.article.removeFavoriteArticle(
+                        this.$http,
+                        {
+                            userId: this.user_id,
+                            articleId: this.id,
+                        },
+                        resp => {
+                            if (resp.status === 200) {
+                                this.$message.success('取消收藏');
+                                this.hasFavoriteIt_.has = false;
+                                this.hasFavoriteIt_.text = '收藏';
+                                this.hasFavoriteIt_.icon = 'el-icon-star-off';
+                            }
+                        }
+                    )
+                } else {
+                    api.article.addFavoriteArticle(
+                        this.$http,
+                        qs.stringify({
+                            userId: this.user_id,
+                            articleId: this.id,
+                        }),
+                        resp => {
+                            if (resp.status === 200) {
+                                this.$message.success('收藏文章');
+                                this.hasFavoriteIt_.has = true;
+                                this.hasFavoriteIt_.text = '已收藏';
+                                this.hasFavoriteIt_.icon = 'el-icon-star-on'
+                            }
+                        }
+                    )
+                }
+            },
+            hasFavoriteIt() {
+                api.article.hasFavoriteIt(
+                    this.$http,
+                    qs.stringify({
+                        userId: this.user_id,
+                        articleId: this.id,
+                    }),
+                    resp => {
+                        if (resp.status === 200) {
+                            const has = resp.data.data.hasMe;
+                            this.hasFavoriteIt_.has = has;
+                            if (has) {
+                                this.hasFavoriteIt_.text = '已收藏';
+                                this.hasFavoriteIt_.icon = 'el-icon-star-on'
+                            } else {
+                                this.hasFavoriteIt_.text = '收藏';
+                                this.hasFavoriteIt_.icon = 'el-icon-star-off'
+                            }
+                        }
+                    }
+                )
+            },
+            getAllComment() {
+                api.article.getArticleCommentByArticleId(
+                    this.$http,
+                    {
+                        articleId: this.id,
+                    },
+                    resp => {
+                        if (resp.status === 200) {
+                            const data = resp.data.data;
+                            data.comments.forEach(item => {
+                                this.comments.push(item);
+                            })
+                        }
+                    }
+                )
+            },
+            dataFormat(data) {
+                return data.split('.')[0]
+            },
+            addComment() {
+                api.article.addComment(
+                    this.$http,
+                    qs.stringify({
+                        articleId: this.id,
+                        userId: this.user_id,
+                        nickName: this.nickname,
+                        content: this.commentForm.content,
+                        commentPid: this.id,
+                    }),
+                    resp => {
+                        if (resp.status === 200) {
+                            const data = resp.data.data;
+                            this.comments.splice(0, 0, {
+                                ...data,
+                                createDate: data.create_at,
+                                nickName: data.nickname,
+                            });
+                            this.showCommentDialog = false;
+                            this.commentForm.content = '';
+                            this.$message.success('添加成功')
+                        } else {
+                            this.$message.error(JSON.stringify(resp));
+                        }
+
+                    }
+                )
+            },
             thumbIt() {
                 api.article.thumbIt(
                     this.$http,
@@ -91,7 +247,7 @@
                 )
             },
             getUserInfo(callback) {
-                this.$http.get('/user/users/'+this.user_id,
+                this.$http.get('/user/users/' + this.user_id,
                     {
                         headers: {
                             "Authorization": this.token,
@@ -146,14 +302,27 @@
         },
         mounted() {
             this.getArticleById();
+            this.getAllComment();
+            this.hasFavoriteIt();
         }
 
     }
 </script>
 
 <style scoped>
-.bottomToolbar {
-    margin-top: 1rem;
-    margin-bottom: 10rem;
-}
+    .bottomToolbar {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .commentNickname {
+        margin-left: 12px;
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+
+    .commentContent {
+        margin-left: 20px;
+        font-size: 13px;
+    }
 </style>

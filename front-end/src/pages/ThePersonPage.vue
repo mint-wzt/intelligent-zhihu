@@ -44,20 +44,6 @@
                                         <div class="md-body-2">{{motto}}</div>
                                     </div>
                                 </div>
-
-                                <div v-if="industry !== null" class="md-layout md-alignment-center-center">
-                                    <div class="md-layout-item ">
-                                        <div class="md-title">行业</div>
-                                    </div>
-                                    <div class="md-layout-item">
-                                        <div class="md-body-2">{{industry}}</div>
-                                    </div>
-                                </div>
-
-                                <div class="md-layout md-alignment-center-left">
-                                    <div class="md-title">教育水平</div>
-                                    <div class="md-body-2" style="margin-left: .5rem;">{{education}}</div>
-                                </div>
                             </div>
 
                         </div>
@@ -71,14 +57,14 @@
             </div>
         </div>
 
-        <div class="md-layout md-alignment-top-center" style="margin-top: .5rem;">
+        <div class="md-layout md-alignment-top-center" style="margin-top: .5rem; margin-bottom: 2rem;">
             <div class="md-layout-item md-size-90">
                 <md-card class="md-with-hover ">
                     <md-card-header>
                         <md-tabs md-sync-route>
-                            <md-tab id="tab-recommend" md-label="文章" :to="{name:'myarticle'}"></md-tab>
-                            <md-tab id="tab-attention" md-label="回答" :to="{name: 'attention'}"></md-tab>
-                            <md-tab id="tab-hotrank" md-label="收藏" :to="{name: 'hotrank'}"></md-tab>
+                            <md-tab id="tab-recommend" md-label="文章" :to="{name:'myarticle'}"/>
+                            <!--                            <md-tab id="tab-attention" md-label="回答" :to="{name: 'attention'}"/>-->
+                            <md-tab id="tab-hotrank" md-label="收藏" :to="{name: 'myfavorite'}"/>
                         </md-tabs>
                     </md-card-header>
                     <md-card-content>

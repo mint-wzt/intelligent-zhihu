@@ -25,6 +25,7 @@ import {
     USER_SET_USER_AVATAR,
     USER_SET_USER_ROLE,
     USER_SET_USER_USERNAME,
+    USER_SET_USER_NICKNAME,
 } from '@/store/mutations-type'
 
 Vue.config.productionTip = false;
@@ -87,6 +88,7 @@ new Vue({
             this.$store.commit('user/' + USER_SET_USER_AVATAR, user);
             this.$store.commit('user/' + USER_SET_USER_ROLE, user);
             this.$store.commit('user/' + USER_SET_USER_USERNAME, user);
+            this.$store.commit("user/" + USER_SET_USER_NICKNAME, user);
         }
     }
 }).$mount('#app');

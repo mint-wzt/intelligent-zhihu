@@ -4,6 +4,7 @@ import {
     USER_SET_USER_AVATAR,
     USER_SET_USER_ROLE,
     USER_SET_USER_USERNAME,
+    USER_SET_USER_NICKNAME,
 } from '../mutations-type'
 
 const state = {
@@ -33,8 +34,11 @@ const getters = {
 const actions = {};
 
 const mutations = {
+    [USER_SET_USER_NICKNAME](state, {nickname}) {
+        state.nickname = nickname;
+    },
     [USER_SET_USER_TOKEN](state, {token}) {
-        state.token = token
+        state.token = token;
     },
     [USER_SET_USER_AVATAR](state, {avatar_url}) {
         state.avatar_url = avatar_url;

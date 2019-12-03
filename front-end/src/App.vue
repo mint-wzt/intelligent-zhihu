@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="background">
     <router-view/>
   </div>
 </template>
@@ -12,4 +12,8 @@ export default {
 </script>
 
 <style>
+  .background {
+    min-height: 1000px;
+    background-image: url(/sign_bg.png);
+  }
 </style>

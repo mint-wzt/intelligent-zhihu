@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="background">
         <el-container>
             <el-header>
                 <md-toolbar>
@@ -85,7 +85,14 @@
 </script>
 
 <style scoped>
-.el-header {
-    padding: 0;
-}
+    .el-header {
+        padding: 0;
+    }
+
+    .background {
+        background-color: rgba(184, 229, 248, 0.25);
+        background-position: center top;
+        background-size: cover;
+        background-attachment: fixed;
+    }
 </style>

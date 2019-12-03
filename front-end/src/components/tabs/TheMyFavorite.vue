@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="md-title">我的文章</div>
-        <md-card v-for="item in items" :key="item.id" class="card-margin">
+        <div class="md-title">我的收藏</div>
+        <md-card style="margin-top: .5rem;" v-for="item in items" :key="item.id" class="card-margin">
             <md-card-header>
                 <md-card-header-text>
                     <div class="md-title">{{item.title}}</div>
@@ -35,14 +35,13 @@
 </template>
 
 <script>
-    import api from "@/api";
-    // import qs from 'querystring'
+    import api from '@/api'
     import {mapState} from 'vuex'
 
     export default {
-        name: "TheMyArticles",
+        name: "TheMyFavorite",
         computed: {
-            ...mapState('user', ['user_id'])
+            ...mapState('user', ['user_id']),
         },
         data() {
             return {
@@ -50,8 +49,8 @@
             }
         },
         methods: {
-            getAllArticleByUserId() {
-                api.article.getArticleByUserId(
+            getFavoriteArticles() {
+                api.article.getFavoriteArticles(
                     this.$http,
                     {
                         userId: this.user_id,
@@ -73,13 +72,11 @@
             }
         },
         mounted() {
-            this.getAllArticleByUserId()
+            this.getFavoriteArticles();
         }
     }
 </script>
 
 <style scoped>
-.card-margin {
-    margin-top: .5rem;
-}
+
 </style>

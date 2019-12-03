@@ -35,6 +35,11 @@ const routes = [
                 path: "",
                 name: "myarticle",
                 component: () => import('@/components/tabs/TheMyArticles.vue')
+            },
+            {
+                path: '/favorite',
+                name: 'myfavorite',
+                component: () => import('@/components/tabs/TheMyFavorite.vue')
             }
         ]
     }, {
@@ -79,6 +84,23 @@ const routes = [
         path: '/question/edit',
         name: 'question_edit',
         component: () => import('@/pages/TheQuestionEditPage.vue')
+    },
+    {
+        path: '/question/list',
+        name: 'questions_list',
+        component: () => import('@/pages/TheQuestionListPage.vue')
+    },
+    {
+        path: "/search/result",
+        name: 'search_result',
+        props: true,
+        component: () => import('@/pages/TheSearchResultPage.vue')
+    },
+    {
+        path: '/question/detail/:id',
+        name: 'question_detail',
+        props: true,
+        component: () => import('@/pages/TheQuestionDetailPage.vue')
     }
 ];
 

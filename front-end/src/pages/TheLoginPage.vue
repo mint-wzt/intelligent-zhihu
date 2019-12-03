@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="background">
         <the-home-nav/>
-        <div class="md-layout md-alignment-top-center" style="margin-top: .5rem;">
+        <div class="md-layout md-alignment-top-center " style="margin-top: .5rem;">
             <div class="md-layout-item md-size-50">
                 <md-card class="md-layout md-alignment-center-center">
                     <md-content class="md-layout-item md-size-70">
@@ -40,6 +40,7 @@
         USER_SET_USER_AVATAR,
         USER_SET_USER_ROLE,
         USER_SET_USER_USERNAME,
+        USER_SET_USER_NICKNAME,
     } from '@/store/mutations-type'
 
     export default {
@@ -82,10 +83,13 @@
                             this.$store.commit("user/" + USER_SET_USER_AVATAR, {
                                 avatar_url: data.avatarUrl,
                             });
+                            this.$store.commit("user/" + USER_SET_USER_NICKNAME, {
+                                nickname: data.nickName,
+                            });
 
                             this.$localStorage.set('state', JSON.stringify(this.$store.state));
 
-                            this.$router.push({name:'recommend'})
+                            this.$router.push({name: 'recommend'})
                         }
                     }
                 }).catch(function (error) {
