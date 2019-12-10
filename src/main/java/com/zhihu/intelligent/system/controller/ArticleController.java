@@ -38,8 +38,8 @@ public class ArticleController {
     @PostMapping("/articles")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('CREATE')")
-    public GlobalResponse publishArticle(@RequestParam("authorId") String authorId,
-                                         @RequestParam("author") String author,
+    public GlobalResponse publishArticle(@RequestParam(value = "authorId") String authorId,
+                                         @RequestParam(value = "author") String author,
                                          @RequestParam(value = "questionId", defaultValue = "") String questionId,
                                          @RequestParam("title") String title,
                                          @RequestParam("type") String type,

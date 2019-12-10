@@ -1,12 +1,14 @@
 package com.zhihu.intelligent.system.service;
 
 import com.zhihu.intelligent.common.constants.SystemConstants;
+import com.zhihu.intelligent.common.utils.ArticleUtil;
 import com.zhihu.intelligent.common.utils.AuthUtil;
 import com.zhihu.intelligent.common.utils.LogUtil;
 import com.zhihu.intelligent.common.utils.UserUtil;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.Log;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
+import com.zhihu.intelligent.system.exception.ImageFormatException;
 import com.zhihu.intelligent.system.exception.UserInfoFormatException;
 import com.zhihu.intelligent.system.exception.UserNameAlreadyExistException;
 import com.zhihu.intelligent.security.model.RegisterUser;
@@ -22,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.Date;
 import java.util.Optional;
 
@@ -54,7 +57,7 @@ public class UserService {
         if (optionalUser.isPresent()) {
             throw new UserNameAlreadyExistException("用户名已经存在");
         }
-        if (!AuthUtil.isRegister(registerUser)){
+        if (!AuthUtil.isRegister(registerUser)) {
             throw new UserInfoFormatException("数据格式有误");
         }
         User user = new User();
@@ -88,7 +91,7 @@ public class UserService {
     public GlobalResponse getUserById(String id) {
         User user = userRepository.findById(id).get();
         GlobalResponse globalResponse = new GlobalResponse(200, "获取用户资料成功！");
-        globalResponse.getData().put("userInfo",user);
+        globalResponse.getData().put("userInfo", user);
         return globalResponse;
     }
 
@@ -105,7 +108,7 @@ public class UserService {
         currentInstance.setModifiedDate(new Date());
         userRepository.save(currentInstance);
         GlobalResponse globalResponse = new GlobalResponse(200, "更新用户资料成功!");
-        globalResponse.getData().put("userInfo",currentInstance);
+        globalResponse.getData().put("userInfo", currentInstance);
         return globalResponse;
     }
 

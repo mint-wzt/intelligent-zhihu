@@ -43,4 +43,11 @@ public class GlobalExceptionHandler {
     public GlobalResponse handleUserInfoEmptyException(UserInfoFormatException e){
         return new GlobalResponse(1001,e.getMessage());
     }
+
+    @ExceptionHandler(value = ImageFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public GlobalResponse handleImageFormatException(ImageFormatException e){
+        return new GlobalResponse(1002,e.getMessage());
+    }
 }
