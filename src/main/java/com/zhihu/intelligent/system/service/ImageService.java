@@ -5,7 +5,7 @@ import com.zhihu.intelligent.common.utils.ArticleUtil;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.Image;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
-import com.zhihu.intelligent.system.exception.ImageFormatException;
+import com.zhihu.intelligent.system.exception.FormatException;
 import com.zhihu.intelligent.system.exception.ImageUploadFailedException;
 import com.zhihu.intelligent.system.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +43,8 @@ public class ImageService {
         Image image = new Image();
         //文件后缀名
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        System.out.println("文件后缀名:" + suffix);
         if (!ArticleUtil.isImage(suffix)) {
-            throw new ImageFormatException("文件格式错误");
+            throw new FormatException("文件格式错误");
         }
         //上传文件名
         String fileName = UUID.randomUUID().toString() + suffix;

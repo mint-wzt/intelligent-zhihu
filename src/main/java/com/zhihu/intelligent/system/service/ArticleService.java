@@ -3,10 +3,12 @@ package com.zhihu.intelligent.system.service;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.*;
 import com.zhihu.intelligent.system.exception.DeleteFailedException;
+import com.zhihu.intelligent.system.exception.FormatException;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -33,6 +35,13 @@ public class ArticleService {
     @Action(type = "CREATE", operation = "发布文章")
     public GlobalResponse save(String authorId, String author, String questionId,
                                String title, String type, String content, int status) {
+        try {
+            if (StringUtils.isEmpty(title.trim()) || StringUtils.isEmpty(type.trim()) || StringUtils.isEmpty(content.trim())){
+                throw new FormatException("文章数据不能为空");
+            }
+        }catch (Exception e){
+            throw new FormatException("文章数据不能为空");
+        }
         Article article = new Article();
         article.setAuthorId(authorId);
         article.setAuthor(author);

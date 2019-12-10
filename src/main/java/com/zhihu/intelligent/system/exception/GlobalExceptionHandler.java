@@ -37,17 +37,10 @@ public class GlobalExceptionHandler {
         return new GlobalResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage());
     }
 
-    @ExceptionHandler(value = UserInfoFormatException.class)
+    @ExceptionHandler(value = FormatException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public GlobalResponse handleUserInfoEmptyException(UserInfoFormatException e){
+    public GlobalResponse handleFormatException(FormatException e){
         return new GlobalResponse(1001,e.getMessage());
-    }
-
-    @ExceptionHandler(value = ImageFormatException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public GlobalResponse handleImageFormatException(ImageFormatException e){
-        return new GlobalResponse(1002,e.getMessage());
     }
 }

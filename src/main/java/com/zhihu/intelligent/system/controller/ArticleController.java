@@ -30,7 +30,7 @@ public class ArticleController {
     @PostMapping("/image/images")
     @PreAuthorize("hasRole('CREATE')")
     @ResponseStatus(HttpStatus.CREATED)
-    public GlobalResponse uploadIamge(@RequestParam("id") String id, @RequestParam("files") MultipartFile[] files) {
+    public GlobalResponse uploadImage(@RequestParam("id") String id, @RequestParam("files") MultipartFile[] files) {
         return imageService.save(files, id);
     }
 

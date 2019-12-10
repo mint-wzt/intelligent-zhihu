@@ -4,12 +4,14 @@ import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.User;
 import com.zhihu.intelligent.system.entity.UserQuestion;
 import com.zhihu.intelligent.system.entity.Question;
+import com.zhihu.intelligent.system.exception.FormatException;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.UserQuestionRepository;
 import com.zhihu.intelligent.system.repository.QuestionRepository;
 import com.zhihu.intelligent.system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -30,6 +32,15 @@ public class QuestionService {
 
     @Action(type = "CREATE", operation = "提出问题")
     public GlobalResponse save(String userId, String content, String type) {
+        GlobalResponse response = new GlobalResponse();
+        try {
+            if (StringUtils.isEmpty(content.trim()) || StringUtils.isEmpty(type.trim())) {
+                throw new FormatException("问题内容或类型不能为空");
+            }
+        }catch (Exception e){
+            throw new FormatException("问题内容或类型不能为空");
+        }
+
         // 保存问题
         Question question = new Question();
         question.setUserId(userId);
@@ -48,7 +59,8 @@ public class QuestionService {
 
 
         // 返回相应
-        GlobalResponse response = new GlobalResponse(200, "问题发布成功");
+        response.setCode(200);
+        response.setMessage("问题发布成功");
         response.getData().put("questionInfo", question);
         return response;
     }
@@ -117,7 +129,7 @@ public class QuestionService {
 
     @Transactional
     @Action(type = "DELETE", operation = "删除问题")
-    public GlobalResponse delete(String questionId,String userId) {
+    public GlobalResponse delete(String questionId, String userId) {
         // 删除问题
         questionRepository.deleteById(questionId);
 
@@ -134,11 +146,11 @@ public class QuestionService {
         return response;
     }
 
-    @Action(type = "READ",operation = "获取用户关注所有的问题")
+    @Action(type = "READ", operation = "获取用户关注所有的问题")
     public GlobalResponse getFocusQuestionList(String userId) {
         // 获取用户关注的问题ID
         List<UserQuestion> userQuestionList = focusRepository.findByUserId(userId);
-        GlobalResponse response = new GlobalResponse(200,"获取成功");
+        GlobalResponse response = new GlobalResponse(200, "获取成功");
         if (userQuestionList != null) {
             // 获取问题ID集合
             List<String> questionIdList = new ArrayList<>();
@@ -149,7 +161,7 @@ public class QuestionService {
             // 根据问题ID 查询问题信息
             List<Question> questions = questionRepository.findAllById(questionIdList);
 
-            response.getData().put("questions",questions);
+            response.getData().put("questions", questions);
         }
 
         return response;
