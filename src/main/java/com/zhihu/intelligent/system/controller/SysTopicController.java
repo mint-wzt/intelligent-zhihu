@@ -27,11 +27,9 @@ public class SysTopicController {
 
     @ApiOperation(value = "查看所有话题", notes = "查看所有话题")
     @GetMapping("/topics")
-    @PreAuthorize("hasAnyRole('ADMIN','ROOT')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
     @ResponseStatus(HttpStatus.OK)
     public GlobalResponse getAllTopics(){
         return topicService.getAllTopics();
     }
-
-
 }
