@@ -90,6 +90,9 @@
 
             publishArticle() {
 
+                if(this.title===null||this.title===undefined||this.title===""){
+                    alert("文章标题不能为空！");
+                }
                 this.uploadImage(()=> {
                     this.$http.post(
                         "/article/articles",
