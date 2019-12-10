@@ -2,6 +2,7 @@ package com.zhihu.intelligent.system.service;
 
 import com.zhihu.intelligent.common.constants.SystemConstants;
 import com.zhihu.intelligent.common.utils.ArticleUtil;
+import com.zhihu.intelligent.common.utils.QiniuCloudUtil;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.Image;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
@@ -31,7 +32,7 @@ public class ImageService {
         for (int i = 0; i < files.length; i++) {
             MultipartFile file = files[i];
             if (file != null) {
-                filesUrlList.add(executeUpload(file, SystemConstants.BASE_DIR, imagePath, userId));
+                filesUrlList.add(executeUpload(file, userId));
             }
         }
         GlobalResponse response = new GlobalResponse(201, "图片上传成功");
@@ -39,8 +40,7 @@ public class ImageService {
         return response;
     }
 
-    public String executeUpload(MultipartFile file, String basePath, String imagePath, String userId) {
-        Image image = new Image();
+    public String executeUpload(MultipartFile file, String userId) {
         //文件后缀名
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         if (!ArticleUtil.isImage(suffix)) {
@@ -48,25 +48,31 @@ public class ImageService {
         }
         //上传文件名
         String fileName = UUID.randomUUID().toString() + suffix;
-        String path = basePath + imagePath + userId + "/" + fileName;
-        //服务端保存的文件对象
-        File serverFile = new File(path);
-        // 检测是否存在目录
-        if (!serverFile.getParentFile().exists()) {
-            serverFile.getParentFile().mkdirs();
-        }
+        String url;
+//        String url = basePath + imagePath + userId + "/" + fileName;
+//        //服务端保存的文件对象
+//        File serverFile = new File(url);
+//        // 检测是否存在目录
+//        if (!serverFile.getParentFile().exists()) {
+//            serverFile.getParentFile().mkdirs();
+//        }
         try {
             //将上传的文件写入到服务器端文件内
-            file.transferTo(serverFile);
+//            file.transferTo(serverFile);
+            url = QiniuCloudUtil.uploadImg(file,fileName);
+            if (url == null){
+                throw new ImageUploadFailedException("图片上传失败");
+            }
         } catch (Exception e) {
             throw new ImageUploadFailedException("图片上传失败");
         }
+        Image image = new Image();
         // 保存图片信息
         image.setFormat(suffix);
         image.setName(fileName);
         image.setCreateDate(new Date());
         image.setSize(file.getSize());
-        image.setImageUrl(SystemConstants.ADDRESS + imagePath + userId + "/" + fileName);
+        image.setImageUrl(url);
         image.setUserId(userId);
         imageRepository.save(image);
         return image.getImageUrl();

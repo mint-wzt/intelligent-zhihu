@@ -112,7 +112,10 @@ public class UserService {
 
     @Action(type = "UPDATE", operation = "更新头像")
     public GlobalResponse updateAvatar(MultipartFile file, String userId) {
-        String avatarUrl = imageService.executeUpload(file, SystemConstants.BASE_DIR, avatarPath, userId);
+        if (file == null){
+            return new GlobalResponse(1002,"文件不存在");
+        }
+        String avatarUrl = imageService.executeUpload(file, userId);
         User user = userRepository.findById(userId).get();
         user.setAvatarUrl(avatarUrl);
         userRepository.save(user);
