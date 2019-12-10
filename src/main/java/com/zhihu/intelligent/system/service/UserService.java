@@ -1,11 +1,13 @@
 package com.zhihu.intelligent.system.service;
 
 import com.zhihu.intelligent.common.constants.SystemConstants;
+import com.zhihu.intelligent.common.utils.AuthUtil;
 import com.zhihu.intelligent.common.utils.LogUtil;
 import com.zhihu.intelligent.common.utils.UserUtil;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.Log;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
+import com.zhihu.intelligent.system.exception.UserInfoFormatException;
 import com.zhihu.intelligent.system.exception.UserNameAlreadyExistException;
 import com.zhihu.intelligent.security.model.RegisterUser;
 import com.zhihu.intelligent.system.entity.User;
@@ -44,22 +46,6 @@ public class UserService {
     @Autowired
     private LogRepository logRepository;
 
-    @Autowired
-    private ArticleRepository articleRepository;
-
-    @Autowired
-    private UserFocusRepository userFocusRepository;
-
-    @Autowired
-    private QuestionRepository questionRepository;
-
-    @Autowired
-    private UserTopicRepository userTopicRepository;
-
-    @Autowired
-    private UserQuestionRepository userQuestionRepository;
-
-
 
     private static String avatarPath = "avatar/";
 
@@ -67,6 +53,9 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByUsername(registerUser.getUsername());
         if (optionalUser.isPresent()) {
             throw new UserNameAlreadyExistException("用户名已经存在");
+        }
+        if (!AuthUtil.isRegister(registerUser)){
+            throw new UserInfoFormatException("数据格式有误");
         }
         User user = new User();
         user.setUsername(registerUser.getUsername());

@@ -36,4 +36,11 @@ public class GlobalExceptionHandler {
     public GlobalResponse handleDeleteFailedException(DeleteFailedException e){
         return new GlobalResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage());
     }
+
+    @ExceptionHandler(value = UserInfoFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public GlobalResponse handleUserInfoEmptyException(UserInfoFormatException e){
+        return new GlobalResponse(1001,e.getMessage());
+    }
 }

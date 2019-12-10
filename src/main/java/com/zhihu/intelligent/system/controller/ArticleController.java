@@ -118,6 +118,4 @@ public class ArticleController {
     public GlobalResponse getAllComments(@RequestParam("articleId") String articleId){
         return articleService.getAllComments(articleId);
     }
-
-
 }
