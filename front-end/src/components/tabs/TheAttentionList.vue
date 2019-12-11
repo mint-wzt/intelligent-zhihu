@@ -1,35 +1,37 @@
 <template>
     <div>
         <div v-if="items.length === 0">没有数据???</div>
-        <md-card v-for="item in items" :key="item.title" class="card-margin">
-            <md-card-header>
-                <md-card-header-text>
-                    <div class="md-title">{{item.title}}</div>
-                </md-card-header-text>
-            </md-card-header>
-            <md-card-content>
-                {{item.content}}
-                <md-button
-                        :to="{
-                        name:'article_detail',
-                        params: {
-                            id : item.authorId,
-                            title: item.title,
-                            content: item.content,
-                            author: item.author
-                        }
-                    }"
-                >阅读全文</md-button>
-            </md-card-content>
-            <md-card-actions>
-                <md-button>赞同</md-button>
-                <md-button>反对</md-button>
-                <md-button>{{item.comment}} 条评论</md-button>
-                <md-button>分享</md-button>
-                <md-button>收藏</md-button>
-                <md-button>...</md-button>
-            </md-card-actions>
-        </md-card>
+        <el-card>
+            <el-row v-for="item in items"
+                    :key="item.id"
+            >
+                <el-col>
+                    <el-row>
+                        <el-col>
+                            <div style="font-size: 18px; margin-bottom: 4px;">{{item.title}}</div>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col>
+                            <div style="margin-bottom: 4px; font-size: 16px">{{item.author}}</div>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col>
+                            <div style="font-size: 14px; margin-bottom: 4px;">{{item.content}}</div>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col>
+                            <el-button type="primary" plain size="mini" @click="handleReadAll(item)">查看全文</el-button>
+                        </el-col>
+                    </el-row>
+                    <el-divider/>
+                </el-col>
+
+            </el-row>
+        </el-card>
     </div>
 </template>
 
@@ -48,10 +50,23 @@
         },
         methods: {
             getData() {
-                api.article.getFollowArticle(this.$http, this.user_id, resp=> {
-                    this.items.concat(resp.data.data.articleList);
+                api.article.getFollowArticle(this.$http, resp=> {
+                    resp.data.data.articles.forEach(item => {
+                        this.items.push({
+                            ...item,
+                            content: item.content.substr(0,100),
+                        });
+                    })
                 })
-            }
+            },
+            handleReadAll(item) {
+                this.$router.push({
+                    name: 'article_detail',
+                    params: {
+                        id: item.id,
+                    }
+                })
+            },
         },
         mounted() {
             this.getData()

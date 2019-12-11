@@ -1,15 +1,15 @@
 <template>
     <div>
         <the-home-nav/>
-        <el-row>
-            <el-col :span="18" :offset="3">
-                <el-row>
-                    <el-col>
+        <el-row >
+            <el-col :span="18" :offset="3" class="content">
+                <el-row >
+                    <el-col :offset="1" :span="20">
                         <h1>{{title}}</h1>
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col>
+                    <el-col :offset="1" :span="20">
                         <h3>作者：<span>{{author}}</span></h3>
                     </el-col>
                 </el-row>
@@ -324,5 +324,9 @@
     .commentContent {
         margin-left: 20px;
         font-size: 13px;
+    }
+    .content {
+        background-color: rgba(224,224,224, 0.9);
+        padding-bottom: 2rem;
     }
 </style>

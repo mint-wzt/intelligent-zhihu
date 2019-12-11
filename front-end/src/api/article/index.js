@@ -1,30 +1,22 @@
 
 
 const articleAPI = {
-    getRecommendArticle(http, user_id, callback) {
+    getRecommendArticle(http, /*user_id,*/ callback) {
         http.get('/home/article/recommend', {
-            params: {
-                userId: user_id
-            }
+            // params: {
+            //     userId: user_id
+            // }
         }).then(resp => {
             callback(resp)
         })
     },
-    getFollowArticle(http, user_id, callback) {
-        http.get('/home/article/follow', {
-            params: {
-                userId: user_id
-            }
-        }).then(resp => {
+    getFollowArticle(http, callback) {
+        http.get('/home/article/follow').then(resp => {
             callback(resp)
         })
     },
-    getHotArticle(http, user_id, callback) {
-        http.get('home/question/hot', {
-            params: {
-                userId: user_id
-            }
-        }).then(resp => {
+    getHotArticle(http, callback) {
+        http.get('home/question/hot').then(resp => {
             callback(resp)
         })
     },

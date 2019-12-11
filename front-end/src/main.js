@@ -40,10 +40,14 @@ Vue.use(VueLocalStorage);
 Vue.use(Croppa);
 
 const service = axios.create({
-    baseURL: 'http://localhost:8081',
+    baseURL: 'http://193.112.14.205:19279',
     timeout: 3000,
 });
 
+// const service = axios.create({
+//     baseURL: 'http://localhost:19279',
+//     timeout: 3000,
+// });
 service.interceptors.request.use(
     config => {
         if (store.state.user.token !== undefined) {
