@@ -64,7 +64,7 @@
                                         <div class="commentNickname">{{comment.nickName}}</div>
                                     </el-col>
                                     <el-col :span="6">
-                                        <div style="font-size: 12px;">{{dataFormat(comment.createDate)}}</div>
+                                        <div style="font-size: 12px;">{{comment.createDate}}</div>
                                     </el-col>
                                 </el-row>
                                 <el-row>
@@ -83,10 +83,12 @@
 </template>
 
 <script>
+    import format from 'date-fns/format'
     import TheHomeNav from '@/components/TheHomeNav.vue'
     import {mapState} from 'vuex'
     import api from "@/api";
-    import qs from 'querystring'
+    import qs from 'querystring';
+
 
     export default {
         name: "TheArticleDetailPage",
@@ -218,7 +220,7 @@
                             const data = resp.data.data;
                             this.comments.splice(0, 0, {
                                 ...data,
-                                createDate: data.create_at,
+                                createDate: format(data.create_at,"yyyy-MM-dd hh:mm:ss"),
                                 nickName: data.nickname,
                             });
                             this.showCommentDialog = false;

@@ -58,6 +58,22 @@
         },
         methods: {
             postRegister() {
+                if(this.username===null||this.username===""||this.username===undefined||this.username.indexOf(" ") !== -1){
+                    alert("用户名不能为空且不能包含空格，请重新输入！");
+                    return;
+                }
+                if(this.password===null||this.password===""||this.password===undefined||this.password.indexOf(" ") !== -1){
+                    alert("密码不能为空且不能包含空格，请重新输入！");
+                    return;
+                }
+                if( this.industry===null||this.industry===""||this.industry===undefined){
+                    alert("所在行业不能为空，请重新输入！");
+                    return;
+                }
+                if( this.email===null||this.email===""||this.email===undefined){
+                    alert("邮箱不能为空，请重新输入！");
+                    return;
+                }
                 this.$http.post('/auth/register',
                    {
                         username: this.username,

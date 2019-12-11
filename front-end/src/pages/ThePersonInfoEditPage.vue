@@ -410,7 +410,7 @@
                         const data = resp.data.data.userInfo;
                         this.username_ = data.username;
                         this.avatar_ = data.avatarUrl;
-                        this.birthday_ = data.birthday;
+                        this.birthday_ =  format(data.birthday, "yyyy-MM-dd");
                         this.career_ = data.career ? data.career: '你没有填写该信息';
                         this.description_ = data.description ? data.description: '';
                         this.education_ = data.education ? data.education: '你没有填写该信息';
