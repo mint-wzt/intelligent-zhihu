@@ -1,5 +1,7 @@
 package com.zhihu.intelligent.system.service;
 
+import com.alibaba.fastjson.JSON;
+import com.google.gson.JsonObject;
 import com.zhihu.intelligent.common.constants.SystemConstants;
 import com.zhihu.intelligent.common.utils.AuthUtil;
 import com.zhihu.intelligent.common.utils.LogUtil;
@@ -12,6 +14,7 @@ import com.zhihu.intelligent.system.exception.UserNameAlreadyExistException;
 import com.zhihu.intelligent.security.model.RegisterUser;
 import com.zhihu.intelligent.system.entity.User;
 import com.zhihu.intelligent.system.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +35,7 @@ import static com.zhihu.intelligent.common.utils.UserUtil.getNullPropertyNames;
  * 用户User服务类，对User表进行增删改查操作，以及分页查询
  */
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
@@ -50,6 +54,7 @@ public class UserService {
     private static String avatarPath = "avatar/";
 
     public GlobalResponse saveUser(RegisterUser registerUser, HttpServletRequest request) {
+        log.info(JSON.toJSONString(registerUser));
         Optional<User> optionalUser = userRepository.findByUsername(registerUser.getUsername());
         if (optionalUser.isPresent()) {
             throw new UserNameAlreadyExistException("用户名已经存在");
@@ -94,6 +99,7 @@ public class UserService {
 
     @Action(type = "UPDATE", operation = "更新用户信息")
     public GlobalResponse updateUser(User user) {
+        log.info(JSON.toJSONString(user));
         User currentInstance = userRepository.findById(user.getId()).get();
 
         // 支持部分更新
@@ -112,8 +118,8 @@ public class UserService {
 
     @Action(type = "UPDATE", operation = "更新头像")
     public GlobalResponse updateAvatar(MultipartFile file, String userId) {
-        if (file == null){
-            return new GlobalResponse(1002,"文件不存在");
+        if (file == null) {
+            return new GlobalResponse(1002, "文件不存在");
         }
         String avatarUrl = imageService.executeUpload(file, userId);
         User user = userRepository.findById(userId).get();

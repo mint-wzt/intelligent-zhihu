@@ -8,6 +8,7 @@ import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.TopicRepository;
 import com.zhihu.intelligent.system.repository.UserRepository;
 import com.zhihu.intelligent.system.repository.UserTopicRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserTopicService {
 
     @Autowired
@@ -30,6 +32,7 @@ public class UserTopicService {
 
     @Action(type = "JUDGE", operation = "判断用户是否关注话题")
     public GlobalResponse hasMe(String topicId, String userId) {
+        log.info("判断用户ID是否关注话题ID:" + userId + "|" + topicId);
         UserTopic topic = userTopicRepository.findByTopicIdAndUserId(topicId, userId);
         GlobalResponse response = new GlobalResponse(200);
         if (topic == null) {
@@ -44,6 +47,7 @@ public class UserTopicService {
 
     @Action(type = "CREATE", operation = "关注话题")
     public GlobalResponse followTopic(String topicId, String name, String userId) {
+        log.info("用户ID关注话题ID:" + userId + "|" + name + "|" + topicId);
         // 保存话题关注记录
         UserTopic userTopic = new UserTopic();
         userTopic.setTopicId(topicId);
@@ -57,7 +61,7 @@ public class UserTopicService {
         topic.setFollowNums(topic.getFollowNums() + 1);
         topicRepository.save(topic);
 
-        // 用户关注话题+1
+        // 用户关注话题 + 1
         User user = userRepository.findById(userId).get();
         user.setTopics(user.getTopics() + 1);
         userRepository.save(user);
@@ -70,6 +74,7 @@ public class UserTopicService {
     @Action(type = "DELETE", operation = "取消关注话题")
     @Transactional
     public GlobalResponse unfollowTopic(String topicId, String userId) {
+        log.info("用户ID关注话题ID:" + userId + "|" + topicId);
         // 删除话题关注
         userTopicRepository.deleteByTopicIdAndUserId(topicId, userId);
 
@@ -89,7 +94,7 @@ public class UserTopicService {
 
     @Action(type = "READ", operation = "查看话题关注记录")
     public GlobalResponse getTopics(String userId) {
-
+        log.info("用户ID查看话题关注记录:" + userId);
         // 获取关注话题记录
         List<UserTopic> topicList = userTopicRepository.findByUserId(userId);
         GlobalResponse response = new GlobalResponse(200, "查看话题关注记录成功");

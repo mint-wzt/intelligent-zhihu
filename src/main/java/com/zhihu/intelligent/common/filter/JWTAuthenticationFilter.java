@@ -1,6 +1,7 @@
 package com.zhihu.intelligent.common.filter;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhihu.intelligent.common.constants.SecurityConstants;
@@ -13,6 +14,7 @@ import com.zhihu.intelligent.system.entity.Log;
 import com.zhihu.intelligent.system.entity.User;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.service.LogService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 /**
  * 如果用户名和密码正确，那么过滤器将创建一个JWT Token 并在HTTP Response 的header中返回它，格式：token: "Bearer +具体token值"
  */
+@Slf4j
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 
@@ -72,6 +75,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         JwtUser jwtUser = (JwtUser) authResult.getPrincipal();
+        log.info(JSON.toJSONString(jwtUser));
         List<String> roles = jwtUser.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)

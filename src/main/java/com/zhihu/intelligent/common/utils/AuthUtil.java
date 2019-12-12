@@ -15,6 +15,7 @@ public class AuthUtil {
      */
     public static boolean isRegister(RegisterUser registerUser) {
         try {
+
             String username = registerUser.getUsername().trim();
             String password = registerUser.getPassword().trim();
             String industry = registerUser.getIndustry().trim();
@@ -33,7 +34,7 @@ public class AuthUtil {
                     password.indexOf(" ") != -1 ||
                     !email.contains("@")) {
                 return false;
-            }
+        }
         }catch (Exception e){
             return false;
         }

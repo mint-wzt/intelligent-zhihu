@@ -17,4 +17,5 @@ public class RegisterUser {
     private String education; // 教育经历（必填）
     private String gender; // 性别
     private String email; // 邮箱(必填)
+
 }

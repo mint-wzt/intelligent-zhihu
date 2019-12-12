@@ -1,12 +1,12 @@
 package com.zhihu.intelligent.system.service;
 
-import com.alibaba.fastjson.JSON;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.Article;
 import com.zhihu.intelligent.system.entity.Collection;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.ArticleRepository;
 import com.zhihu.intelligent.system.repository.CollectionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CollectionService {
 
     @Autowired
@@ -26,6 +27,7 @@ public class CollectionService {
 
     @Action(type = "CREATE", operation = "添加收藏文章")
     public GlobalResponse collect(String articleId, String userId) {
+        log.info("用户ID收藏文章ID:" + userId + "|" + articleId);
         Collection collection = new Collection();
         collection.setArticleId(articleId);
         collection.setUserId(userId);
@@ -38,6 +40,7 @@ public class CollectionService {
 
     @Action(type = "JUDGE", operation = "判断是否已收藏文章")
     public GlobalResponse hasMe(String articleId, String userId) {
+        log.info("判断用户ID收藏文章ID:" + userId + "|" + articleId);
         Collection collection = collectionRepository.findByArticleIdAndUserId(articleId, userId);
         GlobalResponse response = new GlobalResponse(200, "操作成功");
         if (collection == null) {
@@ -50,24 +53,26 @@ public class CollectionService {
 
     @Action(type = "DELETE", operation = "取消收藏文章")
     @Transactional
-    public GlobalResponse delete(String articleId, String userId){
-        collectionRepository.deleteByArticleIdAndUserId(articleId,userId);
+    public GlobalResponse delete(String articleId, String userId) {
+        log.info("用户ID取消收藏文章ID:" + userId + "|" + articleId);
+        collectionRepository.deleteByArticleIdAndUserId(articleId, userId);
 
-        GlobalResponse response = new GlobalResponse(200,"操作成功");
+        GlobalResponse response = new GlobalResponse(200, "操作成功");
         return response;
     }
 
-    @Action(type = "READ",operation = "获取收藏文章")
-    public GlobalResponse getArticleList(String userId){
+    @Action(type = "READ", operation = "获取收藏文章")
+    public GlobalResponse getArticleList(String userId) {
+        log.info("用户ID获取收藏文章:" + userId);
         // 获取收藏文章ID
         List<Collection> collections = collectionRepository.findByUserId(userId);
 
         List<String> articleIdList = new ArrayList<>();
-        GlobalResponse globalResponse = new GlobalResponse(200,"操作成功");
-        if (collections != null){
+        GlobalResponse globalResponse = new GlobalResponse(200, "操作成功");
+        if (collections != null) {
             collections.forEach(collection -> articleIdList.add(collection.getArticleId()));
             List<Article> articles = articleRepository.findAllById(articleIdList);
-            globalResponse.getData().put("articles",articles);
+            globalResponse.getData().put("articles", articles);
         }
         return globalResponse;
     }

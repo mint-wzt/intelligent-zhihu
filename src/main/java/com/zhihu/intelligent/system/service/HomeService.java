@@ -10,6 +10,7 @@ import com.zhihu.intelligent.system.repository.ArticleRepository;
 import com.zhihu.intelligent.system.repository.QuestionRepository;
 import com.zhihu.intelligent.system.repository.UserFocusRepository;
 import com.zhihu.intelligent.system.repository.UserTopicRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class HomeService {
 
     @Autowired
@@ -32,8 +34,9 @@ public class HomeService {
     @Autowired
     private UserTopicRepository userTopicRepository;
 
-     // 推荐
+    // 推荐
     public GlobalResponse recommend(String userId) {
+        log.info("主页推荐：用户ID：" + userId);
         GlobalResponse globalResponse = new GlobalResponse(200, "操作成功");
         List<Article> articles = new ArrayList<>();
         if (userId.length() == 0 || userId == null) {
@@ -44,23 +47,24 @@ public class HomeService {
             List<UserTopic> userTopics = userTopicRepository.findByUserId(userId);
 
             if (userTopics != null) {
-                for (UserTopic userTopic : userTopics){
+                for (UserTopic userTopic : userTopics) {
                     System.out.println(userTopic.getName());
                     List<Article> articleList = articleRepository.findArticlesWithPartOfType(userTopic.getName());
-                    if (articleList != null){
+                    if (articleList != null) {
                         articles.addAll(articleList);
                     }
                 }
-            }else {
+            } else {
                 articles.addAll(articleRepository.findAll(Sort.by("browsedNums").descending()));
             }
         }
-        globalResponse.getData().put("articles",articles);
+        globalResponse.getData().put("articles", articles);
         return globalResponse;
     }
 
     // 关注
     public GlobalResponse follow(String userId) {
+        log.info("主页关注：用户ID：" + userId);
         GlobalResponse response = new GlobalResponse(200, "操作成功");
         if (userId.length() == 0 || userId == null) {
             // 推荐 浏览量多的文章
@@ -77,7 +81,7 @@ public class HomeService {
                 String[] articles = usersId.toArray(new String[usersId.size()]);
                 articleList = articleRepository.findByAuthorIdInOrderByCreateDateDesc(articles);
 
-            }else {
+            } else {
                 articleList = articleRepository.findAll(Sort.by("browsedNums").descending());
             }
             response.getData().put("articles", articleList);
@@ -99,7 +103,7 @@ public class HomeService {
 
     // 搜索
     public GlobalResponse search(String keyWord) {
-
+        log.info("主页搜索：keyWord：" + keyWord);
         List<Article> articles = articleRepository.findArticlesWithPartOfTitle(keyWord);
         GlobalResponse response = new GlobalResponse(200, "操作成功");
         System.out.println(articles == null);

@@ -9,6 +9,7 @@ import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.UserQuestionRepository;
 import com.zhihu.intelligent.system.repository.QuestionRepository;
 import com.zhihu.intelligent.system.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class QuestionService {
 
     @Autowired
@@ -32,12 +34,14 @@ public class QuestionService {
 
     @Action(type = "CREATE", operation = "提出问题")
     public GlobalResponse save(String userId, String content, String type) {
+        log.info("用户ID提出问题:" + userId + "|content:" + content + "|type:" + type);
         GlobalResponse response = new GlobalResponse();
         try {
             if (StringUtils.isEmpty(content.trim()) || StringUtils.isEmpty(type.trim())) {
                 throw new FormatException("问题内容或类型不能为空");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
+            log.error("发布问题内容或类型不能为空");
             throw new FormatException("问题内容或类型不能为空");
         }
 
@@ -67,7 +71,7 @@ public class QuestionService {
 
     @Action(type = "JUDGE", operation = "判断是否已关注问题")
     public GlobalResponse focusHasMe(String questionId, String userId) {
-
+        log.info("判断用户ID是否已关注问题ID:" + userId + "|" + questionId);
         UserQuestion userQuestion = focusRepository.findByQuestionIdAndUserId(questionId, userId);
         GlobalResponse response = new GlobalResponse(200);
         if (userQuestion == null) {
@@ -82,6 +86,7 @@ public class QuestionService {
 
     @Action(type = "FOCUS", operation = "关注问题")
     public GlobalResponse follow(String questionId, String userId) {
+        log.info("用户ID关注问题ID:" + userId + "|" + questionId);
         // 问题关注数+1
         Question question = questionRepository.findById(questionId).get();
         question.setFollowNums(question.getFollowNums() + 1);
@@ -107,6 +112,7 @@ public class QuestionService {
     @Action(type = "DELETE", operation = "取消关注问题")
     @Transactional
     public GlobalResponse unfollow(String questionId, String userId) {
+        log.info("用户ID取消关注问题ID:" + userId + "|" + questionId);
         // 问题关注数-1
         Question question = questionRepository.findById(questionId).get();
         question.setFollowNums(question.getFollowNums() - 1);
@@ -130,6 +136,7 @@ public class QuestionService {
     @Transactional
     @Action(type = "DELETE", operation = "删除问题")
     public GlobalResponse delete(String questionId, String userId) {
+        log.info("用户ID删除问题ID:" + userId + "|" + questionId);
         // 删除问题
         questionRepository.deleteById(questionId);
 
@@ -148,6 +155,7 @@ public class QuestionService {
 
     @Action(type = "READ", operation = "获取用户关注所有的问题")
     public GlobalResponse getFocusQuestionList(String userId) {
+        log.info("用户ID获取所有关注问题:" + userId);
         // 获取用户关注的问题ID
         List<UserQuestion> userQuestionList = focusRepository.findByUserId(userId);
         GlobalResponse response = new GlobalResponse(200, "获取成功");

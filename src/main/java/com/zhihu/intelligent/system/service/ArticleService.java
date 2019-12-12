@@ -1,11 +1,13 @@
 package com.zhihu.intelligent.system.service;
 
+import com.alibaba.fastjson.JSON;
 import com.zhihu.intelligent.system.aop.Action;
 import com.zhihu.intelligent.system.entity.*;
 import com.zhihu.intelligent.system.exception.DeleteFailedException;
 import com.zhihu.intelligent.system.exception.FormatException;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -15,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ArticleService {
 
     @Autowired
@@ -35,11 +38,13 @@ public class ArticleService {
     @Action(type = "CREATE", operation = "发布文章")
     public GlobalResponse save(String authorId, String author, String questionId,
                                String title, String type, String content, int status) {
+        log.info("发布文章: authorId:" + authorId + "| author:" + author + "|questionId:" + questionId + "|title:" + title + "|type:" + type + "|content:" + content + "|status:" + status);
         try {
-            if (StringUtils.isEmpty(title.trim()) || StringUtils.isEmpty(type.trim()) || StringUtils.isEmpty(content.trim())){
+            if (StringUtils.isEmpty(title.trim()) || StringUtils.isEmpty(type.trim()) || StringUtils.isEmpty(content.trim())) {
                 throw new FormatException("文章数据不能为空");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
+            log.error("文章数据不能为空");
             throw new FormatException("文章数据不能为空");
         }
         Article article = new Article();
@@ -72,6 +77,16 @@ public class ArticleService {
 
     @Action(type = "UPDATE", operation = "修改文章")
     public GlobalResponse update(String articleId, String userId, int status, String title, String content) {
+        log.info("修改文章: articleId:" + articleId + "| userId:" + userId + "|title:" + title + "|content:" + content + "|status:" + status);
+        try {
+            if (StringUtils.isEmpty(articleId.trim()) || StringUtils.isEmpty(userId.trim()) || StringUtils.isEmpty(title.trim()) || StringUtils.isEmpty(content.trim())) {
+                throw new FormatException("修改文章信息不能为空");
+            }
+        } catch (Exception e) {
+            log.error("修改文章信息不能为空");
+            throw new FormatException("修改文章信息不能为空");
+        }
+
         // 保存修改文章
         Article article = articleRepository.findById(articleId).get();
         article.setModifiedId(userId);
@@ -89,6 +104,7 @@ public class ArticleService {
 
     @Action(type = "READ", operation = "查看文章")
     public GlobalResponse getArticle(String articleId) {
+        log.info("查看文章ID:" + articleId);
         Article article = articleRepository.findById(articleId).get();
 
         // 浏览量+1
@@ -110,6 +126,7 @@ public class ArticleService {
     @Action(type = "DELETE", operation = "删除文章")
     @Transactional
     public GlobalResponse delete(String articleId) {
+        log.info("删除文章ID:" + articleId);
         try {
             // 删除文章表里的文章
             articleRepository.deleteById(articleId);
@@ -130,7 +147,8 @@ public class ArticleService {
             }
 
         } catch (Exception e) {
-            throw new DeleteFailedException("删除出错");
+            log.error("删除文章出错");
+            throw new DeleteFailedException("删除文章出错");
         }
 
 
@@ -140,6 +158,7 @@ public class ArticleService {
 
     @Action(type = "READ", operation = "判断用户是否点赞了文章")
     public GlobalResponse hasMe(String articleId, String userId) {
+        log.info("判断用户是否点赞了文章:" + userId + "|" + articleId);
         UserArticle thumb = userArticleRepository.findByArticleIdAndUserId(articleId, userId);
         GlobalResponse globalResponse = new GlobalResponse();
         globalResponse.setCode(200);
@@ -155,7 +174,7 @@ public class ArticleService {
 
     @Action(type = "CREATE", operation = "点赞")
     public GlobalResponse thumb(String articleId, String userId) {
-
+        log.info("用户ID点赞文章ID:" + userId + "|" + articleId);
         // 记录用点赞记录
         UserArticle thumb = new UserArticle();
         thumb.setArticleId(articleId);
@@ -174,6 +193,7 @@ public class ArticleService {
 
     @Action(type = "READ", operation = "查看所有文章")
     public GlobalResponse getAllArticles(String userId) {
+        log.info("用户ID查看所有文章:" + userId);
 
         // 获取所有文章
         List<Article> articles = articleRepository.findByAuthorIdOrderByCreateDateDesc(userId);
@@ -185,6 +205,7 @@ public class ArticleService {
 
     @Action(type = "READ", operation = "获取文章所有评论")
     public GlobalResponse getAllComments(String articleId) {
+        log.info("获取文章ID所有评论:" + articleId);
 
         // 获取文章所有评论
         List<Comment> comments = commentRepository.findByArticleId(articleId);
@@ -197,6 +218,4 @@ public class ArticleService {
         response.getData().put("comments", comments);
         return response;
     }
-
-
 }

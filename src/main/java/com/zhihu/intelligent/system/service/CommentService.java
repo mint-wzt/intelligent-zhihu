@@ -9,6 +9,7 @@ import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.ArticleRepository;
 import com.zhihu.intelligent.system.repository.CommentRepository;
 import com.zhihu.intelligent.system.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,6 +17,7 @@ import org.springframework.util.StringUtils;
 import java.util.Date;
 
 @Service
+@Slf4j
 public class CommentService {
 
     @Autowired
@@ -29,7 +31,7 @@ public class CommentService {
 
     @Action(type = "CREATE", operation = "发表文章评论")
     public GlobalResponse save(String articleId, String userId, String content, String commentPid) {
-
+        log.info("用户ID发表文章ID评论:userId:" + userId + " |articleId:" + articleId + "|content:" + content + "|commentPid:" + commentPid);
         try {
             if (StringUtils.isEmpty(content.trim())) {
                 throw new FormatException("评论内容不能为空");

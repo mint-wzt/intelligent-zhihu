@@ -6,6 +6,7 @@ import com.zhihu.intelligent.system.entity.UserFocus;
 import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.repository.UserFocusRepository;
 import com.zhihu.intelligent.system.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserFocusService {
 
     @Autowired
@@ -25,6 +27,7 @@ public class UserFocusService {
 
     @Action(type = "JUDGE", operation = "判断用户是否已关注该用户")
     public GlobalResponse hasMe(String posUid, String negUid) {
+        log.info("判断用户ID是否已关注该用户ID：" + posUid + "|" + negUid);
         UserFocus userFocus = userFocusRepository.findByPosUidAndNegUid(posUid, negUid);
         GlobalResponse response = new GlobalResponse(200, "查询成功");
         if (userFocus == null) {
@@ -38,6 +41,7 @@ public class UserFocusService {
 
     @Action(type = "CREATE", operation = "关注用户")
     public GlobalResponse follow(String posUid, String negUid) {
+        log.info("判断用户ID关注该用户ID：" + posUid + "|" + negUid);
         // 保存关注用户记录
         UserFocus userFocus = new UserFocus();
         userFocus.setPosUid(posUid);
@@ -62,6 +66,7 @@ public class UserFocusService {
     @Action(type = "DELETE", operation = "取消关注用户")
     @Transactional
     public GlobalResponse unfollow(String posUid, String negUid) {
+        log.info("判断用户ID取消关注该用户ID：" + posUid + "|" + negUid);
         // 保存关注用户记录
         userFocusRepository.deleteByPosUidAndNegUid(posUid, negUid);
 
@@ -81,7 +86,7 @@ public class UserFocusService {
 
     @Action(type = "READ", operation = "获取用户的关注用户列表")
     public GlobalResponse getFocusUsers(String userId) {
-
+        log.info("用户ID获取用户的关注用户列表：" + userId);
         // 获取关注用户ID
         List<UserFocus> focusList = userFocusRepository.findByPosUid(userId);
 

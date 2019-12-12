@@ -1,6 +1,5 @@
 package com.zhihu.intelligent.system.service;
 
-import com.zhihu.intelligent.common.constants.SystemConstants;
 import com.zhihu.intelligent.common.utils.ArticleUtil;
 import com.zhihu.intelligent.common.utils.QiniuCloudUtil;
 import com.zhihu.intelligent.system.aop.Action;
@@ -9,21 +8,21 @@ import com.zhihu.intelligent.system.exception.GlobalResponse;
 import com.zhihu.intelligent.system.exception.FormatException;
 import com.zhihu.intelligent.system.exception.ImageUploadFailedException;
 import com.zhihu.intelligent.system.repository.ImageRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.*;
 
 
 @Service
+@Slf4j
 public class ImageService {
 
     @Autowired
     private ImageRepository imageRepository;
 
-    private static String imagePath = "image/";
 
 
     @Action(type = "CREATE", operation = "上传图片")
@@ -44,6 +43,7 @@ public class ImageService {
         //文件后缀名
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         if (!ArticleUtil.isImage(suffix)) {
+            log.error("图片文件格式错误");
             throw new FormatException("文件格式错误");
         }
         //上传文件名
@@ -64,6 +64,7 @@ public class ImageService {
                 throw new ImageUploadFailedException("图片上传失败");
             }
         } catch (Exception e) {
+            log.error("图片上传失败");
             throw new ImageUploadFailedException("图片上传失败");
         }
         Image image = new Image();
