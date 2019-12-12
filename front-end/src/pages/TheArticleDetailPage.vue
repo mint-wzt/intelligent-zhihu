@@ -328,6 +328,9 @@
         font-size: 13px;
     }
     .content {
+        margin-top: 20px;
+        padding-left: 12px;
+        padding-right: 12px;
         background-color: rgba(224,224,224, 0.9);
         padding-bottom: 2rem;
     }
