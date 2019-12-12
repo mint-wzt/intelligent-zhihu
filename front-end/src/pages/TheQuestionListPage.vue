@@ -8,7 +8,7 @@
                         <div v-for="item in items" :key="item.id">
                             <el-row>
                                 <el-col :span="20">
-                                    <el-link href="#" class="title">
+                                    <el-link @click="handleNavigate(item)" class="title">
                                         {{item.content}}
                                     </el-link>
                                 </el-col>
@@ -63,9 +63,13 @@
                     })
                 })
             },
-            showDialogForm(item) {
-                this.curItem = item;
-                this.showDialog = true;
+            handleNavigate(item) {
+                this.$router.push({
+                    name: 'question_detail',
+                    params: {
+                        question: item
+                    }
+                })
             },
             toAnswerQuestion(question) {
                 this.$router.push({

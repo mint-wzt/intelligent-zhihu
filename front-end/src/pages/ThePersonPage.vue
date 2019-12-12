@@ -50,7 +50,7 @@
 
                     </md-card-header>
                     <md-card-actions>
-                        <md-button @click="showUpdateAvatar = true" class="md-raised">修改头像</md-button>
+                        <el-button @click="showUpdateAvatar = true" type="primary" size="larger" style="margin-right: 6px;">修改头像</el-button>
                         <md-button class="md-primary md-raised" :to="{name:'userinfo_edit'}">修改个人资料</md-button>
                     </md-card-actions>
                 </md-card>
@@ -62,9 +62,10 @@
                 <md-card class="md-with-hover ">
                     <md-card-header>
                         <md-tabs md-sync-route>
-                            <md-tab id="tab-recommend" md-label="文章" :to="{name:'myarticle'}"/>
-                            <md-tab id="tab-attention" md-label="回答" :to="{name: 'my_answer'}"/>
-                            <md-tab id="tab-hotrank" md-label="收藏" :to="{name: 'myfavorite'}"/>
+                            <md-tab id="tab-myarticle" md-label="文章" :to="{name:'myarticle'}"/>
+                            <md-tab id="tab-my_answer" md-label="回答" :to="{name: 'my_answer'}"/>
+                            <md-tab id="tab-myfavorite" md-label="收藏" :to="{name: 'myfavorite'}"/>
+                            <md-tab id="tab-my_follow" md-label="关注" :to="{name: 'my_follow'}"/>
                         </md-tabs>
                     </md-card-header>
                     <md-card-content>
@@ -116,7 +117,6 @@
                             }
                         }
                     ).then(resp => {
-                        console.log(resp);
                         if (resp.status === 201) {
                             this.$store.commit('user/'+USER_SET_USER_AVATAR, {avatar_url:resp.data.data.avatarUrl});
                             this.showUpdateAvatar = false;

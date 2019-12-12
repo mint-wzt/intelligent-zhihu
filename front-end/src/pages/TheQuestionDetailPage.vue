@@ -60,13 +60,15 @@
                     <div v-for="item in items"
                          :key="item.content">
                         <el-row>
-                            <el-col :offset="1">
+                            <el-col :offset="1" :span="18">
                                 <div
                                         style="font-weight: 600; font-size: 15px;line-height: 1.1;margin-bottom: 4px;"
                                 >
                                     {{item.author}}
+                                    <el-button style="margin-left: 6px;" size="small" type="primary" plain @click="handleFollowUser(item)">关注该用户</el-button>
                                 </div>
                             </el-col>
+
                         </el-row>
                         <el-row>
                             <el-col>
@@ -88,9 +90,12 @@
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-button type="primary" plain size="mini" >
+                            <el-button type="primary" plain size="mini" @click="handleThumb(item)" >
                                 {{item.thumbs}}
                                 {{item.agreeText}}
+                            </el-button>
+                            <el-button type="success" plain size="mini" @click="handleReadAll(item)" >
+                               查看全文
                             </el-button>
                         </el-row>
                         <el-divider/>
@@ -107,6 +112,8 @@
     import api from '@/api';
     import {mapState} from 'vuex'
     import qs from 'querystring'
+    import format from 'date-fns/format'
+    import parseISO from 'date-fns/parseISO'
 
     export default {
         name: "TheQuestionDetailPage",
@@ -133,6 +140,30 @@
             }
         },
         methods: {
+            handleFollowUser(item) {
+                api.user.followUser(
+                    this.$http,
+                    qs.stringify({
+                        posUid: this.user_id,
+                        negUid: item.authorId,
+                    }),
+                    resp => {
+                        if (resp.status === 200) {
+                            this.$message.success('关注成功');
+                        } else {
+                            this.$message.error('网络错误');
+                        }
+                    }
+                )
+            },
+            handleReadAll(item) {
+                  this.$router.push({
+                      name: 'article_detail',
+                      params: {
+                          id: item.id,
+                      }
+                  })
+            },
             handleFollowQuestion() {
                 api.question.followQuestion(
                     this.$http,
@@ -149,8 +180,29 @@
                     }
                 )
             },
-            // handleThumb(item) {
-            // },
+            handleThumb(item) {
+                if (!item.canThumb) {
+                    this.$message.info('您已经点赞过了');
+                    return;
+                }
+                api.article.thumbIt(
+                    this.$http,
+                    qs.stringify({
+                        userId: this.user_id,
+                        articleId: item.id,
+                    }),
+                    resp => {
+                        if (resp.status === 200) {
+                            item.thumbs += 1;
+                            item.agreeText = '已赞';
+                            item.canThumb = false;
+                            this.$message.success('点赞成功');
+                        }
+                    }
+                );
+
+
+            },
             search() {
                 api.article.seach(this.$http,
                     {
@@ -164,6 +216,8 @@
                                     this.items.push({
                                         ...item,
                                         agreeText : '点赞',
+                                        canThumb: true,
+                                        createDate: format(parseISO(item.createDate), "yyyy-MM-dd HH:mm")
                                     })
                                 })
                             } else {

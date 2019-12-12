@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-row :gutter="6">
+        <el-row>
             <el-col>
                 <data-tables
                         :data="tableData"
@@ -39,6 +39,7 @@
                             label: '查看',
                             props: {
                                 type: 'primary',
+                                size: 'small'
                             },
                             handler: row => {
                                 this.$router.push({name:'article_detail', params: {id: row.id}});
@@ -46,17 +47,9 @@
 
                         },
                         {
-                            label: '审核',
-                            props: {
-                                type: 'info'
-                            },
-                            handler: row => {
-                                this.$message.info(JSON.stringify(row));
-                            }
-                        },
-                        {
                             props: {
                                 type: 'danger',
+                                size: 'small',
                             },
                             handler: row => {
                                 this.$confirm('是否删除该文章？', '删除文章',{

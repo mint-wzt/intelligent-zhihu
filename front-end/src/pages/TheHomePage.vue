@@ -73,6 +73,17 @@
                                 <el-link href="#/answer">{{myAnswerCount}}</el-link>
                             </el-col>
                         </el-row>
+
+                        <el-row type="flex" justify="space-between" style="margin: 20px;">
+                            <el-col :span="18">
+                                <div>
+                                    <md-icon style="margin-right: 5px;">donut_small</md-icon>
+                                    <span>我关注了谁</span></div>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-link href="#/follow">{{myFollowCount}}</el-link>
+                            </el-col>
+                        </el-row>
                     </md-card-content>
                 </md-card>
             </div>
@@ -98,6 +109,7 @@
                 myArticleCount: 0,
                 myFavoriteCount: 0,
                 myAnswerCount: 0,
+                myFollowCount: 0,
             }
         },
         methods: {
@@ -133,11 +145,28 @@
                         }
                     }
                 )
-            }
+            },
+            getFollows() {
+                api.user.getFollow(
+                    this.$http,
+                    {
+                        params: {
+                            userId: this.user_id,
+                        }
+                    },
+                    resp => {
+                        if (resp.status === 200) {
+                            this.myFollowCount =  resp.data.data.users.length;
+                        }
+                    }
+                )
+            },
         },
+
         mounted() {
             this.getMyArticleCount();
             this.getFavoriteCount();
+            this.getFollows();
         }
     }
 </script>

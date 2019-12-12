@@ -10,8 +10,8 @@ const articleAPI = {
             callback(resp)
         })
     },
-    getFollowArticle(http, callback) {
-        http.get('/home/article/follow').then(resp => {
+    getFollowArticle(http, params,  callback) {
+        http.get('/home/article/follow', params).then(resp => {
             callback(resp)
         })
     },

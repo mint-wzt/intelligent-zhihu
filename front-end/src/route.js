@@ -45,6 +45,11 @@ const routes = [
                 path: '/answer',
                 name: 'my_answer',
                 component: () => import('@/components/tabs/TheMyAnswer.vue')
+            },
+            {
+                path: '/follow',
+                name: 'my_follow',
+                component: () => import('@/components/tabs/TheFollow.vue')
             }
         ]
     }, {
