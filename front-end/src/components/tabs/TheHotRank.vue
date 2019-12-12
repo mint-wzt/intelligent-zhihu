@@ -13,14 +13,21 @@
             >
                 <el-col>
                     <el-row>
-                        <el-col>
+                        <el-col :span="2">
+                            <div class="HotItem-index">
+                                <div class="HotItem-rank HotItem-hot">{{item.hotNums}}</div>
+                            </div>
+                        </el-col >
+                        <el-col :span="22">
                             <div style="font-size: 18px; margin-bottom: 4px;">{{item.content}}</div>
                         </el-col>
                     </el-row>
 
-                    <el-row>
-                        <el-col>
-                            <el-button type="primary" plain size="mini" @click="handleReadAll">查看全文</el-button>
+                    <el-row style="margin-top: 12px;">
+                        <el-col :offset="2">
+                            <el-button type="primary" plain size="mini" @click="handleReadAll(item)">查看全文</el-button>
+                            <el-button type="success" plain size="mini" @click="toAnswerQuestion(item)" >回答问题</el-button>
+                            <el-button type="danger" plain size="mini" @click="followQuestion(item)" >关注问题</el-button>
                         </el-col>
                     </el-row>
 
@@ -35,6 +42,7 @@
 <script>
     import api from '@/api'
     import {mapState} from 'vuex'
+    import qs from 'querystring'
     export default {
         name: "TheHotRank",
         data() {
@@ -56,10 +64,37 @@
                     })
                 })
             },
-            handleReadAll() {
+            handleReadAll(question) {
                 this.$router.push({
                     name: 'question_detail',
+                    params: {
+                        question: question,
+                    }
                 })
+            },
+            toAnswerQuestion(question) {
+                this.$router.push({
+                    name: "question_answer_edit",
+                    params: {
+                        question: question
+                    }
+                })
+            },
+            followQuestion(item) {
+                api.question.followQuestion(
+                    this.$http,
+                    qs.stringify({
+                        userId: this.user_id,
+                        questionId: item.id,
+                    }),
+                    resp => {
+                        if (resp.status === 200) {
+                            this.$message.success('关注问题成功')
+                        } else  {
+                            this.$message.error('网络错误')
+                        }
+                    }
+                )
             }
         },
         mounted() {
@@ -69,5 +104,20 @@
 </script>
 
 <style scoped>
+.HotItem-index {
+    text-align: center;
+    width: 57px;
+}
 
+.HotItem-hot {
+    line-height: 1.6;
+    font-size: 18px;
+    color: #999;
+    font-weight: 600;
+    font-synthesis: style;
+}
+
+.HotItem-rank {
+    color: #ff9607;
+}
 </style>

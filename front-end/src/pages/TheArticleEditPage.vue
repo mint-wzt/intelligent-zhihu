@@ -5,7 +5,7 @@
             <div class="md-layout-item md-size-80 ">
                 <md-field>
                     <label>标题</label>
-                    <md-input v-model="title"></md-input>
+                    <md-input v-model="title"/>
                 </md-field>
             </div>
             <div class="md-layout-item md-size-10">
@@ -14,7 +14,7 @@
         </div>
         <div class="md-layout md-alignment-center-center ">
             <div class="md-layout-item md-size-90 ">
-                <md-chips v-model="types" md-placeholder="添加标签"></md-chips>
+                <md-chips v-model="types" md-placeholder="添加标签"/>
             </div>
         </div>
         <div class="md-layout md-alignment-center-center">
@@ -76,7 +76,6 @@
                         }
                     }
                 ).then(resp => {
-                    console.log(resp);
                     if (resp.status === 201) {
                         const {imageUrls} = resp.data.data;
                         for (var index = 0; index < imageUrls.length; index++) {

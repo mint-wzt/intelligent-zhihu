@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="md-title">我的文章</div>
+        <div class="md-title">我的回答</div>
         <md-card v-for="item in items" :key="item.id" class="card-margin">
             <md-card-header>
                 <md-card-header-text>
@@ -40,7 +40,7 @@
     import {mapState} from 'vuex'
 
     export default {
-        name: "TheMyArticles",
+        name: "TheMyAnswer",
         computed: {
             ...mapState('user', ['user_id'])
         },
@@ -61,7 +61,7 @@
                             const data = resp.data.data;
                             if (typeof data.articles !== 'undefined') {
                                 data.articles.forEach(item => {
-                                    if (!api.question.isQuetsion(item)) {
+                                    if (api.question.isQuetsion(item)) {
                                         this.items.push({
                                             ...item,
                                             content: item.content.substr(0, 100) + "..."
@@ -81,7 +81,7 @@
 </script>
 
 <style scoped>
-.card-margin {
-    margin-top: .5rem;
-}
+    .card-margin {
+        margin-top: .5rem;
+    }
 </style>

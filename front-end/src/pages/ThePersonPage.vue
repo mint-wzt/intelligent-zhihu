@@ -63,7 +63,7 @@
                     <md-card-header>
                         <md-tabs md-sync-route>
                             <md-tab id="tab-recommend" md-label="文章" :to="{name:'myarticle'}"/>
-                            <!--                            <md-tab id="tab-attention" md-label="回答" :to="{name: 'attention'}"/>-->
+                            <md-tab id="tab-attention" md-label="回答" :to="{name: 'my_answer'}"/>
                             <md-tab id="tab-hotrank" md-label="收藏" :to="{name: 'myfavorite'}"/>
                         </md-tabs>
                     </md-card-header>
