@@ -39,15 +39,18 @@ Vue.use(mavonEditor);
 Vue.use(VueLocalStorage);
 Vue.use(Croppa);
 
+//服务器
 const service = axios.create({
     baseURL: 'http://193.112.14.205:19279',
-    timeout: 3000,
+    timeout: 30000,
 });
 
+//本地测试
 // const service = axios.create({
 //     baseURL: 'http://localhost:19279',
 //     timeout: 3000,
 // });
+
 service.interceptors.request.use(
     config => {
         if (store.state.user.token !== undefined) {

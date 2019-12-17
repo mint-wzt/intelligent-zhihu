@@ -8,15 +8,19 @@
                         <div>
                             <md-field
                                     :md-clearable="true"
+                                    :class="usernameClass"
                             >
                                 <label>账号</label>
-                                <md-input v-model="username"></md-input>
+                                <md-input v-model="username" required/>
+                                <span class="md-error">{{usernameTip}}</span>
                             </md-field>
                             <md-field
                                     :md-toggle-password="true"
+                                    :class="passwordClass"
                             >
                                 <label>密码</label>
-                                <md-input v-model="password" type="password"></md-input>
+                                <md-input v-model="password" type="password"  required/>
+                                <span class="md-error">{{passwordTip}}</span>
                             </md-field>
                             <md-switch v-model="rememberMe">记住我</md-switch>
                         </div>
@@ -48,11 +52,42 @@
         components: {
             TheHomeNav
         },
+        computed: {
+            usernameClass() {
+                if (this.username === null || this.username.trim() === "") {
+                    return "md-invalid";
+                }
+                return "";
+            },
+            usernameTip() {
+                if (this.username === null || this.username.trim() === "") {
+                    return "用户名不能为空";
+                }
+                return '';
+            },
+            passwordClass() {
+                if (this.password === null || this.password.trim() === "") {
+                    return "md-invalid";
+                }
+                return "";
+            },
+            passwordTip() {
+                if (this.password === null || this.password.indexOf(" ") !== -1) {
+                    return "密码不能包含空格"
+                }
+                if (this.password.trim() === "") {
+                    return "密码不能为空！";
+                }
+
+                return "";
+            },
+        },
         data() {
             return {
                 username: null,
-                password: null,
+                password: '',
                 rememberMe: true,
+
             }
         },
         methods: {
@@ -67,7 +102,7 @@
                 ).then(resp => {
                     if (resp.status === 200) {
                         if (resp.data.code !== 200) {
-
+                            this.$alert(resp.data.message, '来自服务器')
                         } else {
                             const data = resp.data.data.userInfo;
                             this.$store.commit("user/" + USER_SET_USER_TOKEN, {

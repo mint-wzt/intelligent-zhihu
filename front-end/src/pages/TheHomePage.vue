@@ -42,7 +42,7 @@
 
                     <el-divider/>
                     <md-card-content>
-                        <el-row type="flex" justify="space-between">
+                        <el-row type="flex" justify="space-between" style="margin: 20px;">
                             <el-col :span="18">
                                 <div>
                                     <md-icon style="margin-right: 5px;">star</md-icon>
@@ -52,7 +52,7 @@
                                 <el-link href="#/person/me/">{{myArticleCount}}</el-link>
                             </el-col>
                         </el-row>
-                        <el-row type="flex" justify="space-between">
+                        <el-row type="flex" justify="space-between" style="margin: 20px;">
                             <el-col :span="18">
                                 <div>
                                     <md-icon style="margin-right: 5px;">assignment</md-icon>
@@ -60,6 +60,28 @@
                             </el-col>
                             <el-col :span="6">
                                 <el-link href="#/favorite">{{myFavoriteCount}}</el-link>
+                            </el-col>
+                        </el-row>
+
+                        <el-row type="flex" justify="space-between" style="margin: 20px;">
+                            <el-col :span="18">
+                                <div>
+                                    <md-icon style="margin-right: 5px;">info</md-icon>
+                                    <span>我的回答</span></div>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-link href="#/answer">{{myAnswerCount}}</el-link>
+                            </el-col>
+                        </el-row>
+
+                        <el-row type="flex" justify="space-between" style="margin: 20px;">
+                            <el-col :span="18">
+                                <div>
+                                    <md-icon style="margin-right: 5px;">donut_small</md-icon>
+                                    <span>我关注了谁</span></div>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-link href="#/follow">{{myFollowCount}}</el-link>
                             </el-col>
                         </el-row>
                     </md-card-content>
@@ -86,6 +108,8 @@
             return {
                 myArticleCount: 0,
                 myFavoriteCount: 0,
+                myAnswerCount: 0,
+                myFollowCount: 0,
             }
         },
         methods: {
@@ -97,7 +121,14 @@
                     },
                     resp => {
                         if (resp.status === 200) {
-                            this.myArticleCount = resp.data.data.articles.length;
+                            const articles = resp.data.data.articles;
+                            articles.forEach(item => {
+                                if (item.questionId != null && item.questionId.trim() !== "") {
+                                    this.myAnswerCount += 1;
+                                } else {
+                                    this.myArticleCount += 1;
+                                }
+                            })
                         }
                     }
                 )
@@ -114,11 +145,28 @@
                         }
                     }
                 )
-            }
+            },
+            getFollows() {
+                api.user.getFollow(
+                    this.$http,
+                    {
+                        params: {
+                            userId: this.user_id,
+                        }
+                    },
+                    resp => {
+                        if (resp.status === 200) {
+                            this.myFollowCount =  resp.data.data.users.length;
+                        }
+                    }
+                )
+            },
         },
+
         mounted() {
             this.getMyArticleCount();
             this.getFavoriteCount();
+            this.getFollows();
         }
     }
 </script>
