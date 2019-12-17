@@ -84,6 +84,7 @@
 
 <script>
     import format from 'date-fns/format'
+    import parseISO from 'date-fns/parseISO'
     import TheHomeNav from '@/components/TheHomeNav.vue'
     import {mapState} from 'vuex'
     import api from "@/api";
@@ -202,10 +203,11 @@
                     }
                 )
             },
-            dataFormat(data) {
-                return data.split('.')[0]
-            },
             addComment() {
+                if (this.commentForm.content != null && this.commentForm.content.trim() === '') {
+                    this.$alert('您还没有输入评论内容','来自数据校验');
+                    return;
+                }
                 api.article.addComment(
                     this.$http,
                     qs.stringify({
@@ -220,14 +222,14 @@
                             const data = resp.data.data;
                             this.comments.splice(0, 0, {
                                 ...data,
-                                createDate: format(data.create_at,"yyyy-MM-dd hh:mm:ss"),
+                                createDate: format(parseISO(data.create_at),"yyyy-MM-dd hh:mm"),
                                 nickName: data.nickname,
                             });
                             this.showCommentDialog = false;
                             this.commentForm.content = '';
                             this.$message.success('添加成功')
                         } else {
-                            this.$message.error(JSON.stringify(resp));
+                            this.$message.error('网络错误');
                         }
 
                     }
@@ -243,7 +245,8 @@
                     resp => {
                         if (resp.status === 200) {
                             this.thumbs += 1;
-                            this.thumbText = '已赞'
+                            this.thumbText = '已赞';
+                            this.thumbBtn = true;
                         }
                     }
                 )
@@ -328,6 +331,9 @@
         font-size: 13px;
     }
     .content {
+        margin-top: 20px;
+        padding-left: 12px;
+        padding-right: 12px;
         background-color: rgba(224,224,224, 0.9);
         padding-bottom: 2rem;
     }

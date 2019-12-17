@@ -40,6 +40,16 @@ const routes = [
                 path: '/favorite',
                 name: 'myfavorite',
                 component: () => import('@/components/tabs/TheMyFavorite.vue')
+            },
+            {
+                path: '/answer',
+                name: 'my_answer',
+                component: () => import('@/components/tabs/TheMyAnswer.vue')
+            },
+            {
+                path: '/follow',
+                name: 'my_follow',
+                component: () => import('@/components/tabs/TheFollow.vue')
             }
         ]
     }, {
@@ -97,10 +107,16 @@ const routes = [
         component: () => import('@/pages/TheSearchResultPage.vue')
     },
     {
-        path: '/question/detail/:id',
+        path: '/question/detail/',
         name: 'question_detail',
         props: true,
         component: () => import('@/pages/TheQuestionDetailPage.vue')
+    },
+    {
+        path : '/question/answer/edit/',
+        name: 'question_answer_edit',
+        props: true,
+        component: () => import('@/pages/TheAnswerEditPage.vue')
     }
 ];
 
