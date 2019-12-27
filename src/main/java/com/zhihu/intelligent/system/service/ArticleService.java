@@ -112,7 +112,7 @@ public class ArticleService {
         articleRepository.save(article);
 
         // 热度+1
-        if (article.getQuestionId() == "") {
+        if (!StringUtils.isEmpty(article.getQuestionId())) {
             Question question = questionRepository.findById(article.getQuestionId()).get();
             question.setHotNums(question.getHotNums() + 1);
             questionRepository.save(question);
