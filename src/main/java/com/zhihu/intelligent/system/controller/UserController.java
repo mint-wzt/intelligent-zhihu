@@ -23,7 +23,10 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
     @ResponseStatus(HttpStatus.OK)
     public GlobalResponse getUser(@PathVariable("id") String id) {
-        return userService.getUserById(id);
+        User user = userService.getUserById(id);
+        GlobalResponse globalResponse = new GlobalResponse(200, "获取用户资料成功！");
+        globalResponse.getData().put("userInfo", user);
+        return globalResponse;
     }
 
     @ApiOperation(value = "更新用户", notes = "更新用户资料")
@@ -31,7 +34,10 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER','ADMIN','ROOT')")
     @ResponseStatus(HttpStatus.OK)
     public GlobalResponse updateUser(@RequestBody User user) {
-        return userService.updateUser(user);
+        User u = userService.updateUser(user);
+        GlobalResponse globalResponse = new GlobalResponse(200, "更新用户资料成功!");
+        globalResponse.getData().put("userInfo", u);
+        return globalResponse;
     }
 
     @ApiOperation(value = "上传头像", notes = "上传头像")

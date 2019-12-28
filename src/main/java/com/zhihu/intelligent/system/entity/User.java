@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -14,7 +15,7 @@ import java.util.List;
 @Data
 @Table(name = "user")
 @GenericGenerator(name = "user-uuid", strategy = "uuid")
-public class User{
+public class User implements Serializable {
     @Id
     @GeneratedValue(generator = "user-uuid")
     @Column(name = "id")

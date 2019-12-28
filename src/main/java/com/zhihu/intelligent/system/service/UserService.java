@@ -17,6 +17,8 @@ import com.zhihu.intelligent.system.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -90,16 +92,18 @@ public class UserService {
     }
 
     @Action(type = "READ", operation = "获取用户信息")
-    public GlobalResponse getUserById(String id) {
+    @Cacheable(cacheNames = "user", key = "#id")
+    public User getUserById(String id) {
         User user = userRepository.findById(id).get();
-        GlobalResponse globalResponse = new GlobalResponse(200, "获取用户资料成功！");
-        globalResponse.getData().put("userInfo", user);
-        return globalResponse;
+        log.info(id + ":" + "获取用户信息:" + JSON.toJSONString(user));
+        return user;
     }
 
     @Action(type = "UPDATE", operation = "更新用户信息")
-    public GlobalResponse updateUser(User user) {
+    @CachePut(cacheNames = "user",key = "#user.id")
+    public User updateUser(User user) {
         log.info(JSON.toJSONString(user));
+        log.info("@CachePut 更新用户信息");
         User currentInstance = userRepository.findById(user.getId()).get();
 
         // 支持部分更新
@@ -110,9 +114,7 @@ public class UserService {
         currentInstance.setModifiedID(modifiedID);
         currentInstance.setModifiedDate(new Date());
         userRepository.save(currentInstance);
-        GlobalResponse globalResponse = new GlobalResponse(200, "更新用户资料成功!");
-        globalResponse.getData().put("userInfo", currentInstance);
-        return globalResponse;
+        return currentInstance;
     }
 
 
