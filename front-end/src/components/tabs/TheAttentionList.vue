@@ -50,7 +50,11 @@
         },
         methods: {
             getData() {
-                api.article.getFollowArticle(this.$http, resp=> {
+                api.article.getFollowArticle(this.$http, {
+                    params: {
+                        userId: this.user_id,
+                    }
+                },resp=> {
                     resp.data.data.articles.forEach(item => {
                         this.items.push({
                             ...item,

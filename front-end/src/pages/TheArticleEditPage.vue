@@ -1,23 +1,23 @@
 <template>
     <div>
         <the-home-nav/>
-        <div class="md-layout md-alignment-center-center margin-top">
+        <div class="md-layout md-alignment-center-center margin-top bg-pane">
             <div class="md-layout-item md-size-80 ">
                 <md-field>
                     <label>标题</label>
-                    <md-input v-model="title"></md-input>
+                    <md-input v-model="title" required/>
                 </md-field>
             </div>
             <div class="md-layout-item md-size-10">
                 <md-button class="md-primary md-raised" @click="publishArticle">发布</md-button>
             </div>
         </div>
-        <div class="md-layout md-alignment-center-center ">
+        <div class="md-layout md-alignment-center-center bg-pane">
             <div class="md-layout-item md-size-90 ">
-                <md-chips v-model="types" md-placeholder="添加标签"></md-chips>
+                <md-chips v-model="types" md-placeholder="添加标签(按回车确定输入)" required/>
             </div>
         </div>
-        <div class="md-layout md-alignment-center-center">
+        <div class="md-layout md-alignment-center-center bg-pane">
             <div class="md-layout-item md-size-90">
                 <md-field>
                     <mavon-editor
@@ -76,7 +76,6 @@
                         }
                     }
                 ).then(resp => {
-                    console.log(resp);
                     if (resp.status === 201) {
                         const {imageUrls} = resp.data.data;
                         for (var index = 0; index < imageUrls.length; index++) {
@@ -90,9 +89,23 @@
 
             publishArticle() {
 
-                if(this.title===null||this.title===undefined||this.title===""){
-                    alert("文章标题不能为空！");
+                if(this.title == null || this.title.trim() === ""){
+                    this.$alert("文章标题不能为空！", '来自数据校验');
+                    return
                 }
+
+                if(this.content == null || this.content.trim() === ""){
+                    this.$alert("请输入文章内容！", '来自数据校验');
+                    return;
+                }
+
+                if(this.types.length === 0){
+                    this.$alert("请输入文章标签！", '来自数据校验');
+                    return;
+                }
+
+
+
                 this.uploadImage(()=> {
                     this.$http.post(
                         "/article/articles",
@@ -124,8 +137,6 @@
                                 })
                             }
                         }
-                    }).catch(err => {
-                        console.log(err)
                     })
                 });
             }
@@ -187,5 +198,8 @@
         width: 100%;
         height: 100%;
         min-height: 45rem;
+    }
+    .bg-pane {
+        background-color: rgba(255,255,255,0.9);
     }
 </style>

@@ -52,7 +52,7 @@
                                                     active-value="男"
                                                     inactive-value="女"
                                                     inactive-text="女"
-                                            ></el-switch>
+                                            />
                                         </el-col>
                                         <el-col :span="4">
                                             <el-button @click="this.updateGender">确定</el-button>
@@ -64,7 +64,7 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
-                            <el-divider></el-divider>
+                            <el-divider/>
                             <el-row>
                                 <el-col :span="4">个人简介</el-col>
                                 <el-col :span="20">
@@ -80,7 +80,7 @@
                                     <el-row v-if="showDescriptionEditor">
                                         <el-col :span="18">
                                             <el-input v-model="description_"  maxlength="30"
-                                                      show-word-limit placeholder="请输入内容"></el-input>
+                                                      show-word-limit placeholder="请输入内容"/>
                                         </el-col>
                                         <el-col :span="3">
                                             <el-button @click="this.updateDescription">确定</el-button>
@@ -91,7 +91,7 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
-                            <el-divider></el-divider>
+                            <el-divider/>
                             <el-row>
                                 <el-col :span="4">昵称</el-col>
                                 <el-col :span="20">
@@ -107,7 +107,7 @@
                                     <el-row v-if="showNicknameEditor">
                                         <el-col :span="18">
                                             <el-input v-model="nickname_"  maxlength="30"
-                                                      show-word-limit placeholder="请输入内容"></el-input>
+                                                      show-word-limit placeholder="请输入内容"/>
                                         </el-col>
                                         <el-col :span="3">
                                             <el-button @click="this.updateNickname">确定</el-button>
@@ -118,7 +118,7 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
-                            <el-divider></el-divider>
+                            <el-divider/>
                             <el-row>
                                 <el-col :span="4">所在行业</el-col>
                                 <el-col :span="20">
@@ -134,7 +134,7 @@
                                     <el-row v-if="showIndustryEditor">
                                         <el-col :span="18">
                                             <el-input v-model="industry_"  maxlength="30"
-                                                      show-word-limit placeholder="请输入内容"></el-input>
+                                                      show-word-limit placeholder="请输入内容"/>
                                         </el-col>
                                         <el-col :span="3">
                                             <el-button @click="this.updateIndustry">确定</el-button>
@@ -145,7 +145,7 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
-                            <el-divider></el-divider>
+                            <el-divider/>
                             <el-row>
                                 <el-col :span="4">职业</el-col>
                                 <el-col :span="20">
@@ -161,7 +161,7 @@
                                     <el-row v-if="showCareerEditor">
                                         <el-col :span="18">
                                             <el-input v-model="career_"  maxlength="30"
-                                                      show-word-limit placeholder="请输入内容"></el-input>
+                                                      show-word-limit placeholder="请输入内容"/>
                                         </el-col>
                                         <el-col :span="3">
                                             <el-button @click="this.updateCareerInfo">确定</el-button>
@@ -172,7 +172,7 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
-                            <el-divider></el-divider>
+                            <el-divider/>
                             <el-row>
                                 <el-col :span="4">教育水平</el-col>
                                 <el-col :span="20">
@@ -188,7 +188,7 @@
                                     <el-row v-if="showEducationEditor">
                                         <el-col :span="18">
                                             <el-input v-model="education_"  maxlength="30"
-                                                      show-word-limit placeholder="请输入内容"></el-input>
+                                                      show-word-limit placeholder="请输入内容"/>
                                         </el-col>
                                         <el-col :span="3">
                                             <el-button @click="this.updateEducationInfo">确定</el-button>
@@ -199,7 +199,7 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
-                            <el-divider></el-divider>
+                            <el-divider/>
                             <el-row>
                                 <el-col :span="4">姓名</el-col>
                                 <el-col :span="20">
@@ -215,7 +215,7 @@
                                     <el-row v-if="showNameEditor">
                                         <el-col :span="18">
                                             <el-input v-model="name_"  maxlength="30"
-                                                      show-word-limit placeholder="请输入内容"></el-input>
+                                                      show-word-limit placeholder="请输入内容"/>
                                         </el-col>
                                         <el-col :span="3">
                                             <el-button @click="this.updateNameInfo">确定</el-button>
@@ -226,7 +226,7 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
-                            <el-divider></el-divider>
+                            <el-divider/>
                             <el-row>
                                 <el-col :span="4">生日</el-col>
                                 <el-col :span="20">
@@ -254,7 +254,7 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
-                            <el-divider></el-divider>
+                            <el-divider/>
                             <el-row>
                                 <el-col :span="4">电话</el-col>
                                 <el-col :span="20">
@@ -270,7 +270,7 @@
                                     <el-row v-if="showPhoneEditor">
                                         <el-col :span="18">
                                             <el-input v-model="phone_"  maxlength="30"
-                                                      show-word-limit placeholder="请输入内容"></el-input>
+                                                      show-word-limit placeholder="请输入内容"/>
                                         </el-col>
                                         <el-col :span="3">
                                             <el-button @click="this.updatePhoneInfo">确定</el-button>
@@ -281,7 +281,7 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
-                            <el-divider></el-divider>
+                            <el-divider/>
                             <el-row>
                                 <el-col :span="4">邮箱</el-col>
                                 <el-col :span="20">
@@ -297,7 +297,7 @@
                                     <el-row v-if="showEmailEditor">
                                         <el-col :span="18">
                                             <el-input v-model="email_"  maxlength="30"
-                                                      show-word-limit placeholder="请输入内容"></el-input>
+                                                      show-word-limit placeholder="请输入内容"/>
                                         </el-col>
                                         <el-col :span="3">
                                             <el-button @click="this.updateEmailInfo">确定</el-button>
@@ -308,7 +308,7 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
-                            <el-divider></el-divider>
+                            <el-divider/>
 
                             <el-row>
                                 <el-col :span="4">QQ</el-col>
@@ -325,7 +325,7 @@
                                     <el-row v-if="showQQEditor">
                                         <el-col :span="18">
                                             <el-input v-model="qq_"  maxlength="30"
-                                                      show-word-limit placeholder="请输入内容"></el-input>
+                                                      show-word-limit placeholder="请输入内容"/>
                                         </el-col>
                                         <el-col :span="3">
                                             <el-button @click="this.updateQQInfo">确定</el-button>
@@ -349,6 +349,7 @@
 
 <script>
     import format from 'date-fns/format'
+    import parseISO from 'date-fns/parseISO'
     import TheHomeNav from '@/components/TheHomeNav.vue'
     import {mapState} from 'vuex'
     // import {
@@ -410,7 +411,7 @@
                         const data = resp.data.data.userInfo;
                         this.username_ = data.username;
                         this.avatar_ = data.avatarUrl;
-                        this.birthday_ =  format(data.birthday, "yyyy-MM-dd");
+                        this.birthday_ =  data.birthday ? format(parseISO(data.birthday), "yyyy-MM-dd") : '你没有填写该信息';
                         this.career_ = data.career ? data.career: '你没有填写该信息';
                         this.description_ = data.description ? data.description: '';
                         this.education_ = data.education ? data.education: '你没有填写该信息';
@@ -418,7 +419,7 @@
                         this.gender_ = data.gender ? data.gender: '你没有填写该信息';
                         this.industry_ = data.industry ? data.industry: '你没有填写该信息';
                         this.name_ = data.name ? data.name: '你没有填写该信息';
-                        this.nickname_ = data.nickname ? data.nickname: '你没有填写该信息';
+                        this.nickname_ = data.nickName ? data.nickName: '你没有填写该信息';
                         this.phone_ = data.phone ? data.phone: '你没有填写该信息';
                         this.qq_ = data.qq ? data.qq: '你没有填写该信息';
                     }
@@ -440,9 +441,16 @@
             },
 
             updateEmailInfo() {
+
+                const reg_email = /^[A-Za-zd0-9]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
+                if (!reg_email.test(this.email_)) {
+                    this.$alert('邮箱格式不正确', '来自数据校验');
+                    return;
+                }
+
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {email} = resp.data.data;
+                        const {email} = resp.data.data.userInfo;
                         this.email_ = email;
                         this.showEmailEditor = false;
                     }
@@ -455,7 +463,7 @@
             updateQQInfo() {
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {qq} = resp.data.data;
+                        const {qq} = resp.data.data.userInfo;
                         this.qq_ = qq;
                         this.showQQEditor = false;
                     }
@@ -468,7 +476,7 @@
             updatePhoneInfo() {
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {phone} = resp.data.data;
+                        const {phone} = resp.data.data.userInfo;
                         this.phone_ = phone;
                         this.showPhoneEditor = false;
                     }
@@ -481,8 +489,8 @@
             updateBirthdayInfo() {
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {birthday} = resp.data.data;
-                        this.birthday_ = birthday;
+                        const {birthday} = resp.data.data.userInfo;
+                        this.birthday_ = format(parseISO(birthday), "yyyy-MM-dd");
                         this.showBirthdayEditor = false;
                     }
                 }, {
@@ -494,7 +502,7 @@
             updateNameInfo() {
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {name} = resp.data.data;
+                        const {name} = resp.data.data.userInfo;
                         this.name_ = name;
                         this.showNameEditor = false;
                     }
@@ -506,7 +514,7 @@
             updateEducationInfo() {
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {education} = resp.data.data;
+                        const {education} = resp.data.data.userInfo;
                         this.education_ = education;
                         this.showEducationEditor = false;
                     }
@@ -519,7 +527,7 @@
             updateIndustry() {
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {industry} = resp.data.data;
+                        const {industry} = resp.data.data.userInfo;
                         this.industry_ = industry;
                         this.showIndustryEditor = false;
                     }
@@ -532,7 +540,7 @@
             updateCareerInfo() {
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {career} = resp.data.data;
+                        const {career} = resp.data.data.userInfo;
                         this.career_ = career;
                         this.showCareerEditor = false;
                     }
@@ -545,7 +553,7 @@
             updateGender() {
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {gender} = resp.data.data;
+                        const {gender} = resp.data.data.userInfo;
                         this.gender_ = gender;
                         this.showGenderEditor = false;
                     }
@@ -558,7 +566,7 @@
             updateDescription() {
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {description} = resp.data.data;
+                        const {description} = resp.data.data.userInfo;
                         this.description_ = description;
                         this.showDescriptionEditor = false;
                     }
@@ -571,8 +579,8 @@
             updateNickname() {
                 this.updateUserInfo((resp) => {
                     if (resp.status === 200) {
-                        const {nickname} = resp.data.data;
-                        this.nickname_ = nickname;
+                        const {nickName} = resp.data.data.userInfo;
+                        this.nickname_ = nickName;
                         this.showNicknameEditor = false;
                     }
                 }, {
